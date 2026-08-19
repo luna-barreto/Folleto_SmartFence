@@ -22,13 +22,6 @@ const PLATFORM_ITEMS = [
   { label: "Alertas",       detail: "Notificación inmediata ante salida." },
 ];
 
-const RESEARCH_STATS = [
-  { value: "71.5 %",  label: "señales respondidas solo con audio, sin estímulo eléctrico", source: "Campbell et al., 2020" },
-  { value: "99.8 %",  label: "de contención del ganado durante todo el ensayo",             source: "Campbell et al., 2018" },
-  { value: "74.5 %",  label: "de 4 378 señales acústicas con respuesta correcta",           source: "PMC" },
-  { value: "≈ 6",     label: "interacciones para que el 50 % de las novillas aprendiera",   source: "ScienceDirect" },
-  { value: "> 15 km", label: "alcance LoRa en zonas rurales con línea de vista",            source: "Semtech / LoRa Alliance" },
-];
 
 const FUTURE = [
   {
@@ -74,14 +67,6 @@ function Tag({ light = false, children }: { light?: boolean; children: React.Rea
   );
 }
 
-function Chip({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-flex items-center gap-1 rounded-full border border-signal-400/35 bg-signal-400/8 px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest text-signal-300 sm:px-2.5 sm:py-1 sm:text-[10px]">
-      <span className="h-1 w-1 rounded-full bg-signal-400 sm:h-1.5 sm:w-1.5" />
-      {children}
-    </span>
-  );
-}
 
 // Full-viewport slide shell: overflow hidden, flex column, safe bottom padding for nav dots
 function Shell({ children, className = "", style = {} }: { children: React.ReactNode; className?: string; style?: React.CSSProperties }) {
