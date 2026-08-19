@@ -87,3 +87,11 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 .fade-up { animation: fade-up 0.6s ease forwards; }
+
+@keyframes fall-leaf {
+  0%   { transform: translateY(-8vh) translateX(0px)  rotate(0deg);   opacity: 0; }
+  5%   { opacity: 0.75; }
+  50%  { transform: translateY(50vh) translateX(30px)  rotate(120deg); opacity: 0.6; }
+  100% { transform: translateY(108vh) translateX(-15px) rotate(240deg); opacity: 0; }
+}
+.leaf-fall { animation: fall-leaf linear infinite; }

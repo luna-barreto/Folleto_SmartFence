@@ -18,9 +18,7 @@ export function Hero() {
       <div className="relative mx-auto flex max-w-6xl flex-col items-center gap-14 px-4 md:flex-row md:gap-10">
         <div className="flex flex-1 flex-col items-start gap-6 text-left">
           <div className="flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-signal-400">
-              <span className="h-2.5 w-2.5 rounded-full bg-forest-950" />
-            </span>
+            <img src="/icono.png" alt="SmartFence icon" className="h-8 w-8 object-contain" />
             <span className="font-mono text-xs uppercase tracking-[0.25em] text-signal-300">
               Proyecto SENA
             </span>
