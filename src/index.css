@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── reset ──────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  /* use svh so the address bar is excluded on mobile */
+  height: 100svh;
+  height: 100vh; /* fallback first (browsers read last valid) */
+}
+
+/* real fix: last-wins means we need it in the right order */
+@supports (height: 100svh) {
+  html, body { height: 100svh; }
+}
+
+body {
+  @apply bg-forest-950 text-ink-900 font-body;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── app root ───────────────────────────────────────── */
+#root {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  height: 100vh;
+  height: 100svh;
+}
+
+/* ─── slider ─────────────────────────────────────────── */
+.slider-wrap {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  /* tell the browser we handle horizontal panning */
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ─── animations ─────────────────────────────────────── */
+::selection { @apply bg-signal-400/40; }
+
+:focus-visible {
+  outline: 2px solid #2F7A3D;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+@keyframes pulse-ring {
+  0%   { transform: scale(0.9); opacity: 0.7; }
+  70%  { transform: scale(1.6); opacity: 0; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+.signal-pulse { animation: pulse-ring 2.4s cubic-bezier(0.2,0.6,0.4,1) infinite; }
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.spin-slow { animation: spin-slow 60s linear infinite; }
+
+@keyframes blink-cursor {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+.cursor-blink { animation: blink-cursor 0.75s step-end infinite; }
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fade-up 0.6s ease forwards; }

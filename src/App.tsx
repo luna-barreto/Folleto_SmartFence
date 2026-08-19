@@ -1,0 +1,719 @@
+import { useState, useEffect, useCallback, useRef } from "react";
+import { Brain, HeartPulse, Cpu, Target } from "lucide-react";
+import platformScreenshot from "./assets/platform-screenshot.png";
+
+// ─── data ──────────────────────────────────────────────────────────────────────
+
+const STEPS = [
+  { n: "01", label: "Collar",     detail: "El animal lleva el dispositivo." },
+  { n: "02", label: "GPS",        detail: "Calcula la posición del animal." },
+  { n: "03", label: "LoRa",       detail: "Transmite a larga distancia." },
+  { n: "04", label: "Gateway",    detail: "Recibe y reenvía la señal." },
+  { n: "05", label: "Plataforma", detail: "Ubica al animal en el mapa." },
+  { n: "06", label: "Alerta",     detail: "Notifica la salida del perímetro." },
+];
+
+
+const PLATFORM_ITEMS = [
+  { label: "Geocerca",      detail: "Perímetro virtual sobre el mapa." },
+  { label: "Vacas dentro",  detail: "Animales actualmente dentro del área." },
+  { label: "Vacas fuera",   detail: "Animales que salieron del perímetro." },
+  { label: "Ubicación GPS", detail: "Posición de cada collar en tiempo real." },
+  { label: "Alertas",       detail: "Notificación inmediata ante salida." },
+];
+
+const RESEARCH_STATS = [
+  { value: "71.5 %",  label: "señales respondidas solo con audio, sin estímulo eléctrico", source: "Campbell et al., 2020" },
+  { value: "99.8 %",  label: "de contención del ganado durante todo el ensayo",             source: "Campbell et al., 2018" },
+  { value: "74.5 %",  label: "de 4 378 señales acústicas con respuesta correcta",           source: "PMC" },
+  { value: "≈ 6",     label: "interacciones para que el 50 % de las novillas aprendiera",   source: "ScienceDirect" },
+  { value: "> 15 km", label: "alcance LoRa en zonas rurales con línea de vista",            source: "Semtech / LoRa Alliance" },
+];
+
+const FUTURE = [
+  {
+    Icon: Brain,
+    title: "IA y comportamiento animal",
+    items: [
+      "Analizar patrones de movimiento.",
+      "Detectar comportamientos anormales.",
+      "Predecir posibles escapes.",
+      "Identificar cambios en actividad.",
+    ],
+  },
+  {
+    Icon: HeartPulse,
+    title: "Salud",
+    items: [
+      "Integrar sensores para temperatura y actividad.",
+      "Detectar posibles cambios de comportamiento.",
+      "Generar alertas preventivas.",
+    ],
+  },
+  {
+    Icon: Cpu,
+    title: "Sistema",
+    items: [
+      "Mejorar autonomía energética.",
+      "Optimizar el alcance de comunicación.",
+      "Incorporar más sensores.",
+      "Escalar el sistema a más animales y fincas.",
+    ],
+  },
+];
+
+const PRES_NAMES = ["Portada","Video","¿Qué es?","Cómo funciona","Prototipo","Plataforma","Resultados","Futuro","Cierre"];
+
+// ─── helpers ───────────────────────────────────────────────────────────────────
+
+function Tag({ light = false, children }: { light?: boolean; children: React.ReactNode }) {
+  return (
+    <p className={`font-mono text-[10px] uppercase tracking-[0.22em] sm:text-[11px] ${light ? "text-signal-300" : "text-pasture-500"}`}>
+      {children}
+    </p>
+  );
+}
+
+function Chip({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="inline-flex items-center gap-1 rounded-full border border-signal-400/35 bg-signal-400/8 px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest text-signal-300 sm:px-2.5 sm:py-1 sm:text-[10px]">
+      <span className="h-1 w-1 rounded-full bg-signal-400 sm:h-1.5 sm:w-1.5" />
+      {children}
+    </span>
+  );
+}
+
+// Full-viewport slide shell: overflow hidden, flex column, safe bottom padding for nav dots
+function Shell({ children, className = "", style = {} }: { children: React.ReactNode; className?: string; style?: React.CSSProperties }) {
+  return (
+    <div
+      className={`flex h-full w-full flex-col overflow-hidden ${className}`}
+      style={style}
+    >
+      {/* inner scroll area — allows scrolling ONLY if content genuinely overflows on very small devices */}
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden px-4 pb-[52px] pt-4 sm:px-8 sm:pt-6 md:px-12 lg:px-16">
+        <div className="my-auto">
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── typewriter hook ───────────────────────────────────────────────────────────
+
+function useTypewriter(text: string, speed: number, startDelay: number, isActive = true) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (!isActive) { setCount(0); return; }
+    setCount(0);
+    let i = 0;
+    const t = setTimeout(() => {
+      const iv = setInterval(() => {
+        i++;
+        setCount(i);
+        if (i >= text.length) clearInterval(iv);
+      }, speed);
+      return () => clearInterval(iv);
+    }, startDelay);
+    return () => clearTimeout(t);
+  }, [isActive, text]);
+  return { text: text.slice(0, count), done: count >= text.length };
+}
+
+// animated h2 title — resets each time the slide becomes active
+function AnimatedTitle({
+  text, isActive, className = "", style = {}, light = false,
+}: {
+  text: string; isActive: boolean; className?: string; style?: React.CSSProperties; light?: boolean;
+}) {
+  const { text: shown, done } = useTypewriter(text, 42, 180, isActive);
+  return (
+    <h2 className={className} style={style}>
+      {shown}
+      {!done && (
+        <span className={`cursor-blink ${light ? "text-signal-300" : "text-pasture-500"}`}>|</span>
+      )}
+    </h2>
+  );
+}
+
+// ─── slide 1 · Hero ────────────────────────────────────────────────────────────
+
+function S1_Hero({ isActive = true }: { isActive?: boolean }) {
+  const TITLE   = "SmartFence";
+  const TAGLINE = "Protección inteligente para tu ganado.";
+
+  const title   = useTypewriter(TITLE,   75, 400,                         isActive);
+  const tagline = useTypewriter(TAGLINE, 38, 400 + TITLE.length * 75 + 350, isActive);
+
+  const showDesc  = tagline.done;
+  const showChips = tagline.done;
+
+  const smartPart = title.text.slice(0, 5);
+  const fencePart = title.text.slice(5);
+  const titleCursor   = !title.done;
+  const taglineCursor = title.done && !tagline.done;
+
+  return (
+    <div className="relative flex h-full w-full flex-col justify-center overflow-hidden px-4 pb-[52px] pt-4 sm:px-8 sm:pt-6 md:px-12 lg:px-16"
+      style={{ background: "#0B2416" }}>
+      {/* cow — full bleed background */}
+      <img
+        src="/vaca-port.png"
+        alt="Vaca con collar SmartFence"
+        className="absolute inset-0 h-full w-full object-cover object-center"
+      />
+      {/* dark green shadow overlay */}
+      <div className="absolute inset-0" style={{ background: "linear-gradient(to right, rgba(11,36,22,0.92) 0%, rgba(11,36,22,0.75) 55%, rgba(11,36,22,0.35) 100%)" }} />
+      {/* grid pattern */}
+      <div className="absolute inset-0 opacity-[0.045]" style={{ backgroundImage:"linear-gradient(#7ED957 1px,transparent 1px),linear-gradient(90deg,#7ED957 1px,transparent 1px)", backgroundSize:"36px 36px" }} />
+      {/* content */}
+      <div className="relative z-10 max-w-xl ml-2 sm:ml-4">
+        <div className="mb-3 flex items-center gap-1.5 sm:mb-4 sm:gap-2">
+          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-signal-400 sm:h-7 sm:w-7">
+            <span className="h-1.5 w-1.5 rounded-full bg-forest-950" />
+          </span>
+          <Tag light>Proyecto SENA · 2025</Tag>
+        </div>
+        {/* animated title */}
+        <h1 className="font-display font-semibold leading-none" style={{ fontSize:"clamp(2.2rem,10vw,5rem)", minHeight:"1.1em" }}>
+          <span className="text-paper-0">{smartPart}</span>
+          <span className="text-signal-400">{fencePart}</span>
+          {titleCursor && <span className="cursor-blink text-signal-400">|</span>}
+        </h1>
+
+        {/* animated tagline */}
+        <p className="mt-2 font-display text-paper-0/80 sm:mt-3" style={{ fontSize:"clamp(0.85rem,2.5vw,1.25rem)", minHeight:"1.5em" }}>
+          {tagline.text}
+          {taglineCursor && <span className="cursor-blink text-signal-400/80">|</span>}
+        </p>
+
+        {/* fade-in description */}
+        <p
+          className="mt-2 max-w-sm text-[11px] leading-relaxed text-paper-0/50 sm:text-sm sm:mt-3"
+          style={{ opacity: showDesc ? undefined : 0, animation: showDesc ? "fade-up 0.7s ease forwards" : "none" }}
+        >
+          Sistema inteligente de monitoreo ganadero mediante GPS, LoRa y geocercas
+          virtuales, diseñado para conocer la ubicación del ganado en tiempo real
+          y generar alertas cuando abandona el perímetro establecido.
+        </p>
+
+        {/* fade-in chips */}
+        <div
+          className="mt-3 flex flex-wrap gap-1 sm:mt-4 sm:gap-1.5"
+          style={{ opacity: showChips ? undefined : 0, animation: showChips ? "fade-up 0.8s 0.2s ease forwards" : "none" }}
+        >
+          <Chip>Prototipo funcional</Chip>
+          <Chip>Monitoreo en tiempo real</Chip>
+          <Chip>Tecnología IoT</Chip>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── slide 3 · Qué es ──────────────────────────────────────────────────────────
+
+const OBJECTIVES = [
+  "Monitorear la ubicación del ganado en tiempo real.",
+  "Detectar salidas de la cerca virtual.",
+  "Generar alertas para el cuidador.",
+  "Reducir pérdidas y facilitar el manejo del ganado.",
+  "Crear una solución tecnológica de bajo costo y escalable.",
+];
+
+function S3_QueEs({ isActive = true }: { isActive?: boolean }) {
+  return (
+    <Shell className="bg-paper-50">
+      <div className="mx-auto grid w-full max-w-3xl gap-4 px-4 sm:px-8 md:grid-cols-2 md:items-start md:gap-8 md:px-6">
+        <div>
+          <Tag>¿Qué es SmartFence?</Tag>
+          <AnimatedTitle isActive={isActive} text="Una herramienta tecnológica para el ganadero." className="mt-1 font-display font-semibold text-forest-900 sm:mt-2" style={{ fontSize:"clamp(1rem,3.2vw,2rem)" }} />
+          <p className="mt-1.5 text-[11px] leading-relaxed text-ink-600 sm:text-sm">
+            SmartFence es una herramienta tecnológica creada para ayudar a los ganaderos a optimizar sus labores, reducir costos de infraestructura a largo plazo y disminuir el riesgo de pérdida de ganado.
+          </p>
+          <p className="mt-1.5 text-[11px] leading-relaxed text-ink-600 sm:text-sm">
+            La solución integra una aplicación de monitoreo y un collar inteligente que permite conocer la ubicación de cada animal mediante GPS, transmitir la información a través de LoRa y visualizarla en un mapa con geocercas virtuales.
+          </p>
+          <p className="mt-1.5 text-[11px] leading-relaxed text-ink-600 sm:text-sm">
+            El sistema permite identificar cuándo un animal sale del área establecida, generar alertas y facilitar al productor el seguimiento de su ganado sin tener que realizar constantemente recorridos físicos por toda la finca.
+          </p>
+        </div>
+        <div className="rounded-2xl border border-forest-800/10 bg-forest-900 p-4 text-paper-0 sm:p-6">
+          <Tag light>Objetivos</Tag>
+          <ul className="mt-3 space-y-2">
+            {OBJECTIVES.map(obj => (
+              <li key={obj} className="flex items-start gap-2 text-[11px] leading-snug text-paper-0/80 sm:text-xs">
+                <span className="mt-[3px] h-1.5 w-1.5 shrink-0 rounded-full bg-signal-400" />
+                {obj}
+              </li>
+            ))}
+          </ul>
+          <div className="mt-4 grid grid-cols-3 gap-2 border-t border-paper-0/10 pt-3">
+            {[{ l:"GPS", s:"Ubicación" },{ l:"LoRa", s:"Comunicación" },{ l:"Web", s:"Plataforma" }].map(i=>(
+              <div key={i.l}>
+                <p className="font-mono text-sm font-medium text-signal-300">{i.l}</p>
+                <p className="mt-0.5 font-mono text-[9px] uppercase tracking-wide text-paper-0/55">{i.s}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </Shell>
+  );
+}
+
+// ─── slide 4 · Cómo funciona ───────────────────────────────────────────────────
+
+function S4_ComoFunciona({ isActive = true }: { isActive?: boolean }) {
+  return (
+    <Shell className="bg-forest-950 text-paper-0">
+      <div className="mx-auto w-full max-w-3xl px-4 sm:px-8 md:px-6">
+        <Tag light>¿Cómo funciona?</Tag>
+        <AnimatedTitle isActive={isActive} text="La ruta de la señal, del collar a la alerta." light className="mt-1 font-display font-semibold sm:mt-2" style={{ fontSize:"clamp(1rem,3.2vw,2rem)" }} />
+        <div className="mt-3 grid grid-cols-2 gap-2 sm:mt-4 sm:grid-cols-3 md:grid-cols-6 md:gap-2">
+          {STEPS.map((step, i) => (
+            <div key={step.n} className="relative">
+              <div className="rounded-xl border border-paper-0/10 bg-paper-0/5 p-2.5 h-full sm:rounded-2xl sm:p-3">
+                <p className="font-mono text-[9px] text-signal-300 sm:text-[10px]">{step.n}</p>
+                <p className="mt-1.5 font-display text-[11px] font-semibold sm:text-sm">{step.label}</p>
+                <p className="mt-0.5 text-[10px] leading-relaxed text-paper-0/50 sm:text-[11px]">{step.detail}</p>
+              </div>
+              {i < STEPS.length - 1 && (
+                <span className="hidden md:flex absolute top-1/2 -right-2.5 -translate-y-1/2 text-signal-400/50 z-10 text-sm">→</span>
+              )}
+            </div>
+          ))}
+        </div>
+        <p className="mt-3 text-[10px] text-paper-0/30 sm:mt-4 sm:text-center sm:text-xs">
+          Cada posición viaja del collar a la plataforma en segundos, sin internet en campo.
+        </p>
+      </div>
+    </Shell>
+  );
+}
+
+// ─── slide 5 · Prototipo ───────────────────────────────────────────────────────
+
+function S5_Prototipo({ isActive = true }: { isActive?: boolean }) {
+  return (
+    <Shell className="bg-paper-0">
+      <div className="mx-auto grid w-full max-w-3xl gap-4 px-4 sm:px-8 md:grid-cols-2 md:items-center md:gap-8 md:px-6">
+        <div>
+          <Tag>El collar inteligente</Tag>
+          <AnimatedTitle isActive={isActive} text="El prototipo físico, pieza por pieza." className="mt-1 font-display font-semibold text-forest-900 sm:mt-2" style={{ fontSize:"clamp(1rem,3.2vw,2rem)" }} />
+          <p className="mt-1.5 text-[11px] leading-relaxed text-ink-600 sm:text-sm">
+            El GPS obtiene la ubicación del animal y el sistema determina si está dentro o
+            fuera de la cerca virtual. La información se transmite mediante LoRa al gateway.
+          </p>
+          <div className="mt-3 space-y-2">
+            {[
+              { l:"LILYGO LoRa32",          d:"Microcontrolador con LoRa integrado" },
+              { l:"GPS NEO-6M",            d:"Obtiene la ubicación y verifica el perímetro" },
+              { l:"2× Batería LiPo 5000", d:"Recargables con panel solar integrado" },
+              { l:"Panel solar",           d:"Recarga continua las baterías en campo" },
+              { l:"Buzzer",                d:"Estímulo sonoro al detectar salida" },
+              { l:"Carcasa IP67",          d:"Resistente al agua y al polvo" },
+            ].map(c=>(
+              <div key={c.l} className="flex items-center gap-2 border-b border-forest-800/8 pb-2 last:border-0">
+                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-signal-400" />
+                <span className="font-mono text-[10px] font-medium text-forest-900 sm:text-[11px]">{c.l}</span>
+                <span className="text-[10px] text-ink-500 sm:text-[11px]">— {c.d}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <figure className="overflow-hidden rounded-xl border border-forest-800/10 shadow-sm sm:rounded-2xl">
+          <img
+            src="/collar1.jpg"
+            alt="Collar SmartFence"
+            className="w-full h-auto"
+          />
+        </figure>
+      </div>
+    </Shell>
+  );
+}
+
+// ─── slide 6 · Plataforma ──────────────────────────────────────────────────────
+
+function S6_Plataforma({ isActive = true }: { isActive?: boolean }) {
+  return (
+    <Shell className="bg-paper-50">
+      <div className="mx-auto grid w-full max-w-3xl gap-4 px-4 sm:px-8 md:grid-cols-2 md:items-center md:gap-8 md:px-6">
+        <div>
+          <Tag>La plataforma</Tag>
+          <AnimatedTitle isActive={isActive} text="Cerca virtual, vista desde el mapa." className="mt-1 font-display font-semibold text-forest-900 sm:mt-2" style={{ fontSize:"clamp(1rem,3.2vw,2rem)" }} />
+          <p className="mt-1.5 text-[11px] leading-relaxed text-ink-600 sm:text-sm">
+            La interfaz muestra el perímetro y la posición de cada animal en tiempo real,
+            distinguiendo quién está dentro y quién ha salido.
+          </p>
+          <div className="mt-3 space-y-1.5">
+            {PLATFORM_ITEMS.map(item=>(
+              <div key={item.label} className="flex items-start gap-2">
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-signal-400" />
+                <p className="text-[11px] text-ink-600 sm:text-xs">
+                  <span className="font-mono font-medium text-forest-900">{item.label}</span> — {item.detail}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* screenshot — hidden on mobile to avoid overflow */}
+        <figure className="hidden md:block overflow-hidden rounded-xl border border-forest-800/12 shadow-[0_8px_30px_rgba(11,36,22,0.12)] lg:rounded-2xl">
+          <img src={platformScreenshot} alt="Plataforma SmartFence" className="w-full h-auto" />
+        </figure>
+        {/* mobile: full image */}
+        <figure className="block md:hidden overflow-hidden rounded-xl border border-forest-800/12 shadow-sm">
+          <img src={platformScreenshot} alt="Plataforma SmartFence" className="w-full h-auto" />
+        </figure>
+      </div>
+    </Shell>
+  );
+}
+
+// ─── slide 7 · Resultados ──────────────────────────────────────────────────────
+
+function S7_Resultados({ isActive = true }: { isActive?: boolean }) {
+  return (
+    <Shell className="bg-forest-950 text-paper-0">
+      <div className="mx-auto w-full max-w-3xl px-4 sm:px-8 md:px-6">
+        <Tag light>Investigación y antecedentes</Tag>
+        <AnimatedTitle isActive={isActive} text="La ciencia respalda el sistema." light className="mt-1 font-display font-semibold sm:mt-2" style={{ fontSize:"clamp(1rem,3.2vw,2rem)" }} />
+
+        {/* summaries */}
+        <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3">
+          <div className="rounded-lg border border-paper-0/8 bg-paper-0/5 p-2.5">
+            <p className="font-mono text-[9px] uppercase tracking-widest text-signal-400">LoRa · largo alcance</p>
+            <p className="mt-1.5 text-[10px] leading-relaxed text-paper-0/70 sm:text-[11px]">
+              Diseñada para IoT de bajo consumo. Alcanza <strong className="text-paper-0">hasta 15 km en zonas rurales</strong> y ~5 km en urbano (Semtech). El alcance real depende de antena, altura y terreno.
+            </p>
+            <p className="mt-1.5 text-[10px] leading-relaxed text-paper-0/50 sm:text-[11px]">
+              En SmartFence: el collar envía GPS, batería, estado del animal y eventos de alerta al gateway.
+            </p>
+          </div>
+          <div className="rounded-lg border border-paper-0/8 bg-paper-0/5 p-2.5">
+            <p className="font-mono text-[9px] uppercase tracking-widest text-signal-400">¿Cómo aprenden las vacas?</p>
+            <p className="mt-1.5 text-[10px] leading-relaxed text-paper-0/70 sm:text-[11px]">
+              Aprendizaje asociativo: <strong className="text-paper-0">Sonido → retrocede → evita la zona.</strong> Con sonido + estímulo controlado, los animales aprenden a responder antes del segundo estímulo.
+            </p>
+            <ul className="mt-1.5 space-y-1">
+              {[
+                "≈ 6 interacciones para que el 50 % de 12 novillas aprendiera.",
+                "≈ 3 eventos acústicos para formar la asociación.",
+                "≈ 5 eventos para completar el período de aprendizaje.",
+              ].map(t => (
+                <li key={t} className="flex items-start gap-1.5 text-[10px] leading-snug text-paper-0/55">
+                  <span className="mt-[3px] h-1 w-1 shrink-0 rounded-full bg-signal-400" />
+                  {t}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* chart */}
+        <div className="mt-2 sm:mt-3">
+          <figure className="overflow-hidden rounded-xl border border-paper-0/10">
+            <img src="/research-chart.png" alt="Progresión del aprendizaje asociativo ganadero" className="w-full h-auto" />
+          </figure>
+          <p className="mt-1.5 text-[9px] leading-relaxed text-paper-0/35">
+            Los estímulos eléctricos disminuyen a medida que el animal aprende a responder solo al tono sonoro. (Confessore et al., 2022 · Fuchs et al., 2024)
+          </p>
+        </div>
+      </div>
+    </Shell>
+  );
+}
+
+// ─── slide 8 · Futuro ──────────────────────────────────────────────────────────
+
+function S8_Futuro({ isActive = true }: { isActive?: boolean }) {
+  return (
+    <Shell className="bg-paper-0">
+      <div className="mx-auto w-full max-w-3xl px-4 sm:px-8 md:px-6">
+        <Tag>Trabajos futuros</Tag>
+        <AnimatedTitle isActive={isActive} text="De la ubicación al comportamiento." className="mt-1 font-display font-semibold text-forest-900 sm:mt-2" style={{ fontSize:"clamp(1rem,3.2vw,2rem)" }} />
+        <div className="mt-3 grid grid-cols-1 gap-2 sm:mt-4 sm:grid-cols-3 sm:gap-3">
+          {FUTURE.map(f=>(
+            <div key={f.title} className="rounded-xl border border-forest-800/8 bg-paper-50 p-3 sm:rounded-2xl sm:p-4">
+              <div className="flex items-center gap-2">
+                <f.Icon size={16} className="shrink-0 text-pasture-600" />
+                <p className="font-display text-xs font-semibold text-forest-900 sm:text-sm">{f.title}</p>
+              </div>
+              <ul className="mt-2 space-y-1">
+                {f.items.map(item => (
+                  <li key={item} className="flex items-start gap-1.5 text-[10px] leading-snug text-ink-600 sm:text-[11px]">
+                    <span className="mt-[3px] h-1 w-1 shrink-0 rounded-full bg-signal-400" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <div className="mt-3 flex items-start gap-3 rounded-xl border border-pasture-600/20 bg-pasture-600/5 p-3 sm:mt-4 sm:rounded-2xl sm:p-4">
+          <Target size={16} className="mt-0.5 shrink-0 text-pasture-600" />
+          <div>
+            <p className="font-display text-xs font-semibold text-forest-900 sm:text-sm">Nuestro objetivo</p>
+            <p className="mt-1 text-[10px] leading-relaxed text-ink-600 sm:text-[11px]">
+              Convertir SmartFence en una plataforma inteligente de monitoreo ganadero que combine
+              IoT, GPS, LoRa e inteligencia artificial para mejorar la seguridad, el bienestar
+              animal y la gestión del ganado.
+            </p>
+          </div>
+        </div>
+      </div>
+    </Shell>
+  );
+}
+
+// ─── slide 9 · Cierre ──────────────────────────────────────────────────────────
+
+function S9_Cierre({ isActive = true }: { isActive?: boolean }) {
+  void isActive; // cierre uses logo image, no typed title needed
+  return (
+    <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden px-4 pb-[52px] pt-4 text-center text-paper-0"
+      style={{ background:"#0B2416" }}>
+      {/* cow — full bleed background */}
+      <img src="/vaca-32.png" alt="" className="absolute inset-0 h-full w-full object-cover object-center pointer-events-none" />
+      {/* dark green overlay */}
+      <div className="absolute inset-0" style={{ background:"linear-gradient(to bottom, rgba(11,36,22,0.85) 0%, rgba(11,36,22,0.65) 50%, rgba(11,36,22,0.85) 100%)" }} />
+      {/* grid */}
+      <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage:"linear-gradient(#7ED957 1px,transparent 1px),linear-gradient(90deg,#7ED957 1px,transparent 1px)", backgroundSize:"36px 36px" }} />
+      <div className="relative z-10 flex flex-col items-center">
+        <div className="mb-3 sm:mb-4">
+          <img
+            src="/logo.png"
+            alt="SmartFence logo"
+            className="w-56 sm:w-68 md:w-80"
+            style={{ mixBlendMode: "screen" }}
+          />
+        </div>
+        <h2 className="font-display font-semibold max-w-xs leading-tight sm:max-w-md" style={{ fontSize:"clamp(1.2rem,4vw,2.5rem)" }}>
+          Tecnología para el monitoreo inteligente del ganado.
+        </h2>
+        <p className="mt-2 max-w-xs text-[11px] leading-relaxed text-paper-0/50 sm:max-w-sm sm:text-sm sm:mt-3">
+          Prototipo que conecta el campo con el futuro, cuidando cada animal y
+          haciendo más inteligente la ganadería.
+        </p>
+        <div className="mx-auto mt-4 h-px w-10 bg-paper-0/20 sm:mt-5" />
+        <div className="mt-3">
+          <Chip>2026</Chip>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── video slide ───────────────────────────────────────────────────────────────
+
+function SlideVideo({ isActive = true }: { isActive?: boolean }) {
+  const videoMobileRef = useRef<HTMLVideoElement>(null);
+  const videoDesktopRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    [videoMobileRef, videoDesktopRef].forEach(ref => {
+      if (!ref.current) return;
+      if (isActive) {
+        ref.current.play().catch(() => {});
+      } else {
+        ref.current.pause();
+        ref.current.currentTime = 0;
+      }
+    });
+  }, [isActive]);
+
+  return (
+    <div className="flex h-full w-full flex-col items-center justify-center bg-forest-950 px-4 pb-[52px] pt-4 text-paper-0 sm:px-10">
+      <div className="w-full max-w-3xl">
+        <div className="mb-2 sm:mb-3">
+          <Tag light>Experimento</Tag>
+          <h2 className="mt-0.5 font-display font-semibold" style={{ fontSize:"clamp(0.95rem,3vw,1.8rem)" }}>
+            Prueba del collar en finca.
+          </h2>
+          <p className="mt-1 text-[11px] leading-relaxed text-paper-0/55 sm:text-sm">
+            En este video se evidencia la prueba del prototipo del collar SmartFence colocado en una vaca.
+          </p>
+        </div>
+
+        {/* portrait en móvil */}
+        <div className="relative mx-auto block overflow-hidden rounded-xl border border-paper-0/10 bg-forest-900 sm:hidden"
+             style={{ aspectRatio: "9/16", width: "82vw", maxHeight: "78svh" }}>
+          <video ref={videoMobileRef} className="absolute inset-0 h-full w-full object-cover" src="/prueba-campo.mp4" controls muted playsInline />
+        </div>
+        {/* landscape en desktop */}
+        <div className="relative hidden w-full overflow-hidden rounded-2xl border border-paper-0/10 bg-forest-900 sm:block" style={{ paddingTop:"56.25%" }}>
+          <video ref={videoDesktopRef} className="absolute inset-0 h-full w-full object-cover" src="/prueba-campo.mp4" controls muted playsInline />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── swipe hook (native, non-passive touchmove) ────────────────────────────────
+
+function useSwipe(ref: React.RefObject<HTMLDivElement | null>, onLeft: () => void, onRight: () => void) {
+  const sx = useRef(0);
+  const sy = useRef(0);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const onStart = (e: TouchEvent) => {
+      sx.current = e.touches[0].clientX;
+      sy.current = e.touches[0].clientY;
+    };
+    const onMove = (e: TouchEvent) => {
+      const dx = Math.abs(e.touches[0].clientX - sx.current);
+      const dy = Math.abs(e.touches[0].clientY - sy.current);
+      // if horizontal movement is dominant, prevent default (stops vertical scroll steal)
+      if (dx > dy && dx > 8) e.preventDefault();
+    };
+    const onEnd = (e: TouchEvent) => {
+      const dx = sx.current - e.changedTouches[0].clientX;
+      const dy = sy.current - e.changedTouches[0].clientY;
+      if (Math.abs(dx) < 40 || Math.abs(dy) > Math.abs(dx) * 0.9) return;
+      if (dx > 0) onLeft(); else onRight();
+    };
+
+    el.addEventListener("touchstart", onStart,  { passive: true  });
+    el.addEventListener("touchmove",  onMove,   { passive: false }); // must be non-passive to preventDefault
+    el.addEventListener("touchend",   onEnd,    { passive: true  });
+    return () => {
+      el.removeEventListener("touchstart", onStart);
+      el.removeEventListener("touchmove",  onMove);
+      el.removeEventListener("touchend",   onEnd);
+    };
+  }, [ref, onLeft, onRight]);
+}
+
+// ─── presentation inner slider ─────────────────────────────────────────────────
+
+function PresentationSlider() {
+  const [cur, setCur] = useState(0);
+  const [busy, setBusy] = useState(false);
+  const [showControls, setShowControls] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const total = 9;
+
+  const revealControls = useCallback(() => {
+    setShowControls(true);
+    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    hideTimerRef.current = setTimeout(() => setShowControls(false), 2500);
+  }, []);
+
+  const go = useCallback((i: number) => {
+    if (busy || i === cur) return;
+    setBusy(true);
+    setCur(i);
+    setTimeout(() => setBusy(false), 650);
+  }, [busy, cur]);
+
+  const prev = useCallback(() => go(Math.max(0, cur - 1)), [go, cur]);
+  const next = useCallback(() => go(Math.min(total - 1, cur + 1)), [go, cur]);
+
+  // keyboard
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") next();
+      if (e.key === "ArrowLeft"  || e.key === "ArrowUp")   prev();
+    };
+    window.addEventListener("keydown", h);
+    return () => window.removeEventListener("keydown", h);
+  }, [next, prev]);
+
+  // touch swipe
+  useSwipe(wrapRef, next, prev);
+
+  const slides = [
+    <S1_Hero         isActive={cur === 0} />,
+    <SlideVideo isActive={cur === 1} />,
+    <S3_QueEs        isActive={cur === 2} />,
+    <S4_ComoFunciona isActive={cur === 3} />,
+    <S5_Prototipo    isActive={cur === 4} />,
+    <S6_Plataforma   isActive={cur === 5} />,
+    <S7_Resultados   isActive={cur === 6} />,
+    <S8_Futuro       isActive={cur === 7} />,
+    <S9_Cierre       isActive={cur === 8} />,
+  ];
+
+  const btnVis = `transition-opacity duration-300 ${showControls ? "opacity-100" : "opacity-0 sm:opacity-100"}`;
+
+  return (
+    <div ref={wrapRef} className="relative h-full w-full overflow-hidden"
+      onMouseMove={revealControls} onTouchStart={revealControls}>
+      {/* track */}
+      <div style={{
+        display:"flex", width:`${total * 100}%`, height:"100%",
+        transform:`translateX(calc(-${cur} * (100% / ${total})))`,
+        transition:"transform 0.6s cubic-bezier(0.76,0,0.24,1)",
+        willChange:"transform",
+      }}>
+        {slides.map((slide, i) => (
+          <div key={i} style={{ width:`${100 / total}%`, height:"100%", flexShrink:0, overflow:"hidden" }}>
+            {slide}
+          </div>
+        ))}
+      </div>
+
+      {/* prev arrow */}
+      {cur > 0 && (
+        <button onClick={prev} aria-label="Anterior"
+          className={`absolute left-2 top-1/2 -translate-y-1/2 z-50 flex h-8 w-8 items-center justify-center rounded-full border border-white/25 bg-black/45 text-white backdrop-blur-sm transition-all active:scale-90 sm:left-3 sm:h-11 sm:w-11 ${btnVis}`}
+          style={{ touchAction:"manipulation" }}>
+          <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
+          </svg>
+        </button>
+      )}
+
+      {/* next arrow */}
+      {cur < total - 1 && (
+        <button onClick={next} aria-label="Siguiente"
+          className={`absolute right-2 top-1/2 -translate-y-1/2 z-50 flex h-8 w-8 items-center justify-center rounded-full border border-white/25 bg-black/45 text-white backdrop-blur-sm transition-all active:scale-90 sm:right-3 sm:h-11 sm:w-11 ${btnVis}`}
+          style={{ touchAction:"manipulation" }}>
+          <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
+          </svg>
+        </button>
+      )}
+
+      {/* dots */}
+      <nav aria-label="Diapositivas"
+        className="absolute bottom-3 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2">
+        {Array.from({ length: total }).map((_, i) => (
+          <button key={i} onClick={() => go(i)} aria-label={PRES_NAMES[i]} title={PRES_NAMES[i]}
+            className={`rounded-full transition-all duration-300 ${i === cur ? "h-2.5 w-6 bg-signal-400 shadow-[0_0_8px_rgba(126,217,87,0.85)]" : "h-2.5 w-2.5 bg-white/60 hover:bg-white/90 shadow-[0_0_4px_rgba(255,255,255,0.4)]"}`}
+            style={{ touchAction:"manipulation" }}
+          />
+        ))}
+      </nav>
+
+      {/* slide label — sm+ */}
+      <div className="absolute bottom-3 left-3 z-50 hidden sm:block">
+        <span className="rounded-full border border-white/12 bg-black/35 px-2.5 py-1 font-mono text-[9px] uppercase tracking-widest text-white/40 backdrop-blur-sm">
+          {PRES_NAMES[cur]}
+        </span>
+      </div>
+
+      {/* counter */}
+      <div className="absolute top-3 right-3 z-50 font-mono text-[9px] text-white/35 select-none sm:top-4 sm:right-4 sm:text-[11px]">
+        {cur + 1}/{total}
+      </div>
+    </div>
+  );
+}
+
+// ─── App ──────────────────────────────────────────────────────────────────────
+
+export default function App() {
+  return (
+    <div className="slider-wrap">
+      <PresentationSlider />
+    </div>
+  );
+}
