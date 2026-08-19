@@ -144,7 +144,7 @@ function S1_Hero({ isActive = true }: { isActive?: boolean }) {
 
       {/* cow — full bleed background */}
       <img
-        src="/vaca-port.png"
+        src="/vaca blanca 1.png"
         alt="Vaca con collar SmartFence"
         className="absolute inset-0 h-full w-full object-cover object-center"
       />
