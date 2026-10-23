@@ -144,7 +144,7 @@ function S1_Hero({ isActive = true }: { isActive?: boolean }) {
 
       {/* cow — full bleed background */}
       <img
-        src="/vaca blanca 1.png"
+        src="/portada-nueva.jpg"
         alt="Vaca con collar SmartFence"
         className="absolute inset-0 h-full w-full object-cover object-center"
       />
@@ -305,24 +305,51 @@ function S4_ComoFunciona({ isActive = true }: { isActive?: boolean }) {
     <Shell className="bg-forest-950 text-paper-0">
       <div className="mx-auto w-full max-w-3xl px-4 sm:px-8 md:px-6">
         <Tag light>¿Cómo funciona?</Tag>
-        <AnimatedTitle isActive={isActive} text="La ruta de la señal, del collar a la alerta." light className="mt-1 font-display font-semibold sm:mt-2" style={{ fontSize:"clamp(1rem,3.2vw,2rem)" }} />
-        <div className="mt-3 grid grid-cols-2 gap-2 sm:mt-4 sm:grid-cols-3 md:grid-cols-6 md:gap-2">
-          {STEPS.map((step, i) => (
-            <div key={step.n} className="relative">
-              <div className="rounded-xl border border-paper-0/10 bg-paper-0/5 p-2.5 h-full sm:rounded-2xl sm:p-3">
-                <p className="font-mono text-[9px] text-signal-300 sm:text-[10px]">{step.n}</p>
-                <p className="mt-1.5 font-display text-[11px] font-semibold sm:text-sm">{step.label}</p>
-                <p className="mt-0.5 text-[10px] leading-relaxed text-paper-0/50 sm:text-[11px]">{step.detail}</p>
-              </div>
-              {i < STEPS.length - 1 && (
-                <span className="hidden md:flex absolute top-1/2 -right-2.5 -translate-y-1/2 text-signal-400/50 z-10 text-sm">→</span>
-              )}
+        <AnimatedTitle isActive={isActive} text="Diseño y creación del prototipo." light className="mt-1 font-display font-semibold sm:mt-2" style={{ fontSize:"clamp(1rem,3.2vw,2rem)" }} />
+
+        {/* layout 2 columnas en desktop */}
+        <div className="mt-3 flex flex-col gap-3 sm:mt-4 md:flex-row md:items-start md:gap-6">
+
+          {/* columna izquierda: texto + pasos */}
+          <div className="flex-1 min-w-0">
+            <p className="text-[10px] leading-relaxed text-paper-0/60 sm:text-xs">
+              SmartFence AI nace de la integración de hardware y software para desarrollar una
+              solución tecnológica orientada a la protección del ganado. Durante la construcción
+              del prototipo, integramos los componentes electrónicos, el sistema de alimentación
+              y la carcasa que protege los circuitos.
+            </p>
+            <p className="mt-2 text-[10px] leading-relaxed text-paper-0/60 sm:text-xs">
+              Cada etapa nos permitió avanzar desde el diseño hasta la implementación de un
+              collar inteligente capaz de obtener y transmitir la ubicación del animal.
+            </p>
+
+            <div className="mt-3 grid grid-cols-2 gap-1.5 sm:grid-cols-3 sm:gap-2">
+              {STEPS.map((step, i) => (
+                <div key={step.n} className="relative">
+                  <div className="rounded-xl border border-paper-0/10 bg-paper-0/5 p-2 h-full">
+                    <p className="font-mono text-[9px] text-signal-300">{step.n}</p>
+                    <p className="mt-1 font-display text-[10px] font-semibold sm:text-[11px]">{step.label}</p>
+                    <p className="mt-0.5 text-[9px] leading-relaxed text-paper-0/45 sm:text-[10px]">{step.detail}</p>
+                  </div>
+                  {i < STEPS.length - 1 && (
+                    <span className="hidden sm:flex absolute top-1/2 -right-2 -translate-y-1/2 text-signal-400/40 z-10 text-xs">→</span>
+                  )}
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+
+          {/* columna derecha: galería de imágenes */}
+          <div className="flex gap-1.5 md:flex-col md:w-44 md:gap-2 shrink-0">
+            {["/proto1.jpg", "/proto2.jpg", "/proto3.jpg"].map((src, i) => (
+              <div key={i} className="flex-1 md:flex-none overflow-hidden rounded-xl border border-paper-0/10 md:rounded-2xl">
+                <img src={src} alt={`Construcción prototipo ${i + 1}`}
+                  className="w-full h-full object-cover aspect-square md:aspect-auto md:h-24" />
+              </div>
+            ))}
+          </div>
+
         </div>
-        <p className="mt-3 text-[10px] text-paper-0/30 sm:mt-4 sm:text-center sm:text-xs">
-          Cada posición viaja del collar a la plataforma en segundos, sin internet en campo.
-        </p>
       </div>
     </Shell>
   );
@@ -360,7 +387,7 @@ function S5_Prototipo({ isActive = true }: { isActive?: boolean }) {
         </div>
         <figure className="overflow-hidden rounded-xl border border-forest-800/10 shadow-sm sm:rounded-2xl">
           <img
-            src="/collar1.jpg"
+            src="/collar-final.jpg"
             alt="Collar SmartFence"
             className="w-full h-auto"
           />
@@ -626,20 +653,38 @@ function S9_Cierre({ isActive = true }: { isActive?: boolean }) {
 // ─── video slide ───────────────────────────────────────────────────────────────
 
 function SlideVideo({ isActive = true }: { isActive?: boolean }) {
-  const videoMobileRef = useRef<HTMLVideoElement>(null);
-  const videoDesktopRef = useRef<HTMLVideoElement>(null);
+  const v1MobileRef  = useRef<HTMLVideoElement>(null);
+  const v1DesktopRef = useRef<HTMLVideoElement>(null);
+  const v2MobileRef  = useRef<HTMLVideoElement>(null);
+  const v2DesktopRef = useRef<HTMLVideoElement>(null);
+  const [showSecond, setShowSecond] = useState(false);
 
+  // cuando el slide se activa/desactiva, controla reproducción
   useEffect(() => {
-    [videoMobileRef, videoDesktopRef].forEach(ref => {
-      if (!ref.current) return;
-      if (isActive) {
-        ref.current.play().catch(() => {});
-      } else {
-        ref.current.pause();
-        ref.current.currentTime = 0;
-      }
-    });
+    if (isActive) {
+      setShowSecond(false);
+      v1MobileRef.current!  && (v1MobileRef.current!.currentTime  = 0);
+      v1DesktopRef.current! && (v1DesktopRef.current!.currentTime = 0);
+      v1MobileRef.current?.play().catch(() => {});
+      v1DesktopRef.current?.play().catch(() => {});
+    } else {
+      [v1MobileRef, v1DesktopRef, v2MobileRef, v2DesktopRef].forEach(r => {
+        if (!r.current) return;
+        r.current.pause();
+        r.current.currentTime = 0;
+      });
+      setShowSecond(false);
+    }
   }, [isActive]);
+
+  // cuando termina el primer video, pasa al segundo
+  const onFirstEnded = () => {
+    setShowSecond(true);
+    setTimeout(() => {
+      v2MobileRef.current?.play().catch(() => {});
+      v2DesktopRef.current?.play().catch(() => {});
+    }, 50);
+  };
 
   return (
     <div className="flex h-full w-full flex-col bg-forest-950 px-5 pb-[52px] pt-5 text-paper-0 sm:px-10 sm:pt-7">
@@ -665,17 +710,39 @@ function SlideVideo({ isActive = true }: { isActive?: boolean }) {
           En este video se evidencia la prueba del prototipo del collar SmartFence colocado en una vaca.
         </p>
 
-        {/* Video — fills remaining space */}
-        <div className="mt-4 flex-1 min-h-0">
-          {/* portrait en móvil */}
-          <div className="relative mx-auto block overflow-hidden rounded-2xl border border-paper-0/10 bg-forest-900 sm:hidden"
-               style={{ width: "72vw", aspectRatio: "9/16", maxHeight: "72svh" }}>
-            <video ref={videoMobileRef} className="absolute inset-0 h-full w-full object-cover" src="/prueba-campo.mp4" controls muted playsInline />
+        {/* Videos — el segundo aparece automáticamente al terminar el primero */}
+        <div className="mt-4 flex-1 min-h-0 relative">
+
+          {/* VIDEO 1 */}
+          <div className={`absolute inset-0 transition-opacity duration-500 ${showSecond ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
+            {/* móvil */}
+            <div className="relative mx-auto block overflow-hidden rounded-2xl border border-paper-0/10 bg-forest-900 sm:hidden"
+                 style={{ width: "72vw", aspectRatio: "9/16", maxHeight: "72svh" }}>
+              <video ref={v1MobileRef} className="absolute inset-0 h-full w-full object-cover"
+                src="/prueba-campo.mp4" controls muted playsInline onEnded={onFirstEnded} />
+            </div>
+            {/* desktop */}
+            <div className="relative hidden h-full w-full overflow-hidden rounded-3xl border border-paper-0/10 bg-forest-900 sm:block">
+              <video ref={v1DesktopRef} className="h-full w-full object-cover"
+                src="/prueba-campo.mp4" controls muted playsInline onEnded={onFirstEnded} />
+            </div>
           </div>
-          {/* landscape en desktop */}
-          <div className="relative hidden h-full w-full overflow-hidden rounded-3xl border border-paper-0/10 bg-forest-900 sm:block">
-            <video ref={videoDesktopRef} className="h-full w-full object-cover" src="/prueba-campo.mp4" controls muted playsInline />
+
+          {/* VIDEO 2 */}
+          <div className={`absolute inset-0 transition-opacity duration-500 ${showSecond ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+            {/* móvil */}
+            <div className="relative mx-auto block overflow-hidden rounded-2xl border border-paper-0/10 bg-forest-900 sm:hidden"
+                 style={{ width: "72vw", aspectRatio: "9/16", maxHeight: "72svh" }}>
+              <video ref={v2MobileRef} className="absolute inset-0 h-full w-full object-cover"
+                src="/smartfence2.mp4" controls muted playsInline />
+            </div>
+            {/* desktop */}
+            <div className="relative hidden h-full w-full overflow-hidden rounded-3xl border border-paper-0/10 bg-forest-900 sm:block">
+              <video ref={v2DesktopRef} className="h-full w-full object-cover"
+                src="/smartfence2.mp4" controls muted playsInline />
+            </div>
           </div>
+
         </div>
 
       </div>
