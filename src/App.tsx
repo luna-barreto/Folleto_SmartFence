@@ -417,7 +417,7 @@ function S4_ComoFunciona({ isActive = true }: { isActive?: boolean }) {
           </div>
 
           {/* galería de imágenes — clic para ampliar */}
-          <div className="mt-3 grid grid-cols-3 gap-2 sm:mt-4 sm:gap-3">
+          <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-3 sm:mt-4">
             {["/proto1.jpg", "/proto2.jpg", "/proto3.jpg"].map((src, i) => (
               <button
                 key={i}
@@ -428,7 +428,7 @@ function S4_ComoFunciona({ isActive = true }: { isActive?: boolean }) {
                 <img
                   src={src}
                   alt={`Construcción prototipo ${i + 1}`}
-                  className="w-full object-cover aspect-[4/3] transition-transform duration-300 group-hover:scale-105"
+                  className="w-full object-cover aspect-[16/9] sm:aspect-[4/3] transition-transform duration-300 group-hover:scale-105"
                 />
               </button>
             ))}
