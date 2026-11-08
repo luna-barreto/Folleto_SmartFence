@@ -1,3 +1,4 @@
+import { Brain, HeartPulse, Volume2 } from "lucide-react";
 import { Eyebrow } from "./ui";
 
 const AI_POINTS = [
@@ -25,7 +26,7 @@ export function Future() {
 
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           <div className="rounded-2xl border border-paper-0/10 bg-paper-0/5 p-6">
-            <p className="text-xl">🤖</p>
+            <Brain size={20} className="text-signal-400" />
             <p className="mt-3 font-display text-base font-semibold">
               Inteligencia artificial
             </p>
@@ -48,7 +49,7 @@ export function Future() {
           </div>
 
           <div className="rounded-2xl border border-paper-0/10 bg-paper-0/5 p-6">
-            <p className="text-xl">❤️</p>
+            <HeartPulse size={20} className="text-signal-400" />
             <p className="mt-3 font-display text-base font-semibold">
               Monitoreo de salud
             </p>
@@ -71,7 +72,7 @@ export function Future() {
           </div>
 
           <div className="rounded-2xl border border-paper-0/10 bg-paper-0/5 p-6">
-            <p className="text-xl">🔊</p>
+            <Volume2 size={20} className="text-signal-400" />
             <p className="mt-3 font-display text-base font-semibold">
               Entrenamiento mediante estímulos
             </p>
@@ -88,7 +89,7 @@ export function Future() {
               salvaguardas de ese sistema específico.
             </p>
             <div className="mt-4 rounded-xl border border-dashed border-paper-0/15 p-3">
-              <p className="font-mono text-[10px] uppercase tracking-wide text-signal-300">
+              <p className="font-mono text-[12px] uppercase tracking-wide text-signal-300">
                 Futuro
               </p>
               <p className="mt-1.5 text-xs leading-relaxed text-paper-0/70">

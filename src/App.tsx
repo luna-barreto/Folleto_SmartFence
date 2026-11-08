@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Brain, HeartPulse, Cpu, Target, MapPin, Bell, Wifi, Radio, Volume2, Monitor } from "lucide-react";
+import { Sparkles, Stethoscope, Layers, Rocket, ListChecks, MapPin, Bell, Wifi, Radio, Volume2, Monitor, ShieldOff, ShieldCheck, TrendingDown, Flame, ArrowRightFromLine, Banknote, ChevronLeft, ChevronRight, Hexagon, CircleCheck, CircleX, LocateFixed, Bookmark, Signal, Globe, Zap } from "lucide-react";
 import platformScreenshot from "./assets/platform-screenshot.png";
 
 // ─── data ──────────────────────────────────────────────────────────────────────
@@ -25,7 +25,7 @@ const PLATFORM_ITEMS = [
 
 const FUTURE = [
   {
-    Icon: Brain,
+    Icon: Sparkles,
     title: "IA y comportamiento animal",
     items: [
       "Analizar patrones de movimiento.",
@@ -35,7 +35,7 @@ const FUTURE = [
     ],
   },
   {
-    Icon: HeartPulse,
+    Icon: Stethoscope,
     title: "Salud",
     items: [
       "Integrar sensores para temperatura y actividad.",
@@ -44,7 +44,7 @@ const FUTURE = [
     ],
   },
   {
-    Icon: Cpu,
+    Icon: Layers,
     title: "Sistema",
     items: [
       "Mejorar autonomía energética.",
@@ -55,13 +55,13 @@ const FUTURE = [
   },
 ];
 
-const PRES_NAMES = ["Portada","Video","¿Qué es?","Cómo funciona","Prototipo","Plataforma","Resultados","Futuro","Cierre"];
+const PRES_NAMES = ["Portada","Video","Problemática","¿Qué es?","Cómo funciona","Prototipo","Plataforma","Resultados","Futuro","Cierre"];
 
 // ─── helpers ───────────────────────────────────────────────────────────────────
 
 function Tag({ light = false, children }: { light?: boolean; children: React.ReactNode }) {
   return (
-    <p className={`font-mono text-[10px] uppercase tracking-[0.22em] sm:text-[11px] ${light ? "text-signal-300" : "text-pasture-500"}`}>
+    <p className={`font-mono text-[12px] uppercase tracking-[0.22em] sm:text-[11px] ${light ? "text-signal-300" : "text-pasture-500"}`}>
       {children}
     </p>
   );
@@ -76,10 +76,8 @@ function Shell({ children, className = "", style = {} }: { children: React.React
       style={style}
     >
       {/* inner scroll area — allows scrolling ONLY if content genuinely overflows on very small devices */}
-      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden px-4 pb-[52px] pt-4 sm:px-8 sm:pt-6 md:px-12 lg:px-16">
-        <div className="my-auto">
-          {children}
-        </div>
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden px-10 pb-[52px] pt-8 sm:px-10 sm:pt-8 md:px-14 lg:px-20">
+        {children}
       </div>
     </div>
   );
@@ -139,14 +137,14 @@ function S1_Hero({ isActive = true }: { isActive?: boolean }) {
   const taglineCursor = title.done && !tagline.done;
 
   return (
-    <div className="relative flex h-full w-full flex-col overflow-hidden px-4 pb-[52px] pt-4 sm:px-8 sm:pt-6 md:px-12 lg:px-16"
+    <div className="relative flex h-full w-full flex-col overflow-hidden px-8 pb-[52px] pt-6 sm:px-8 sm:pt-6 md:px-12 lg:px-16"
       style={{ background: "#0B2416" }}>
 
       {/* cow — full bleed background */}
       <img
         src="/portada-nueva.jpg"
         alt="Vaca con collar SmartFence"
-        className="absolute inset-0 h-full w-full object-cover object-center"
+        className="absolute inset-0 h-full w-full object-cover object-[70%_50%] sm:object-center"
       />
       {/* dark green overlay */}
       <div className="absolute inset-0" style={{ background: "linear-gradient(to right, rgba(11,36,22,0.92) 0%, rgba(11,36,22,0.75) 55%, rgba(11,36,22,0.35) 100%)" }} />
@@ -172,19 +170,19 @@ function S1_Hero({ isActive = true }: { isActive?: boolean }) {
       ))}
 
       {/* Logo row — top */}
-      <div className="relative z-10 flex items-center gap-2.5">
+      <div className="relative z-10 flex items-center gap-2.5 mt-1 sm:mt-0">
         <img src="/icono.png" alt="SmartFence" className="h-9 w-9 object-contain sm:h-10 sm:w-10" />
         <span className="font-display text-base font-semibold text-paper-0 sm:text-lg">SmartFence</span>
       </div>
 
       {/* Main content — centered vertically */}
-      <div className="relative z-10 my-auto max-w-xl ml-2 sm:ml-4">
+      <div className="relative z-10 my-auto max-w-xl">
         <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-white px-3 py-1.5 sm:mb-4 sm:px-4 sm:py-2">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="shrink-0">
             <path d="M12 2C12 2 4 8 4 14a8 8 0 0016 0C20 8 12 2 12 2z" fill="#7ED957"/>
             <line x1="12" y1="22" x2="12" y2="10" stroke="#7ED957" strokeWidth="1.5"/>
           </svg>
-          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-forest-800 sm:text-[11px]">Proyecto · 2026</span>
+          <span className="font-mono text-[12px] uppercase tracking-[0.2em] text-forest-800 sm:text-[11px]">Proyecto · 2026</span>
         </div>
 
         {/* animated title */}
@@ -203,9 +201,7 @@ function S1_Hero({ isActive = true }: { isActive?: boolean }) {
         {/* fade-in description */}
         <p className="mt-2 max-w-sm text-[11px] leading-relaxed text-paper-0/50 sm:text-sm sm:mt-3"
           style={{ opacity: showContent ? undefined : 0, animation: showContent ? "fade-up 0.7s ease forwards" : "none" }}>
-          Sistema inteligente de monitoreo ganadero mediante GPS, LoRa y geocercas
-          virtuales, diseñado para conocer la ubicación del ganado en tiempo real
-          y generar alertas cuando abandona el perímetro establecido.
+          Sistema inteligente de monitoreo ganadero, diseñado para conocer la ubicación del ganado en tiempo real y generar alertas cuando abandona el perímetro establecido.
         </p>
 
         {/* fade-in chips con iconos */}
@@ -216,7 +212,7 @@ function S1_Hero({ isActive = true }: { isActive?: boolean }) {
             { Icon: Bell,   label: "Alertas inteligentes"     },
             { Icon: Wifi,   label: "Tecnología IoT"           },
           ] as const).map(({ Icon, label }) => (
-            <span key={label} className="inline-flex items-center gap-1.5 rounded-full border border-signal-400/35 bg-signal-400/8 px-2.5 py-1 font-mono text-[9px] uppercase tracking-widest text-signal-300 sm:px-3 sm:py-1.5 sm:text-[10px]">
+            <span key={label} className="inline-flex items-center gap-1.5 rounded-full border border-signal-400/35 bg-signal-400/8 px-2.5 py-1 font-mono text-[9px] uppercase tracking-widest text-signal-300 sm:px-3 sm:py-1.5 sm:text-[12px]">
               <Icon size={10} className="shrink-0 text-signal-400" />
               {label}
             </span>
@@ -227,33 +223,89 @@ function S1_Hero({ isActive = true }: { isActive?: boolean }) {
   );
 }
 
-// ─── slide 3 · Qué es ──────────────────────────────────────────────────────────
+// ─── slide 3 · Problemática ───────────────────────────────────────────────────
+
+function S3_Problematica({ isActive = true }: { isActive?: boolean }) {
+  return (
+    <Shell className="bg-forest-950 text-paper-0">
+      <div className="mx-auto w-full max-w-3xl">
+
+        <Tag light>Problemática</Tag>
+        <AnimatedTitle isActive={isActive} text="Una problemática real en la ganadería colombiana." light
+          className="mt-1 font-display font-semibold sm:mt-2" style={{ fontSize:"clamp(1rem,3.2vw,2rem)" }} />
+
+        <p className="mt-2 text-[12px] leading-relaxed text-paper-0/60">
+          La ganadería colombiana enfrenta importantes pérdidas por el robo, el extravío, el desplazamiento y la muerte de animales debido a enfermedades, sequías, falta de alimento y otras situaciones de riesgo.
+        </p>
+
+        {/* Stat cards */}
+        <div className="mt-3 grid grid-cols-2 gap-2 sm:mt-4">
+          {([
+            { Icon: ShieldOff,         value: "10.893",     label: "Hurtados en 2024",       sub: "~30 al día",                   accent: "#ef4444", bg: "rgba(239,68,68,0.08)"   },
+            { Icon: TrendingDown,      value: "179.000+",   label: "Hurtados 2015–2025",     sub: "14,2 % recuperado",            accent: "#f87171", bg: "rgba(239,68,68,0.05)"   },
+            { Icon: Flame,             value: "8.879",      label: "Muertos en 45 días",     sub: "El Niño 2023–2024",            accent: "#fbbf24", bg: "rgba(251,191,36,0.08)"  },
+            { Icon: ArrowRightFromLine,value: "308.481",    label: "Desplazados",            sub: "En busca de agua y alimento",  accent: "#7ED957", bg: "rgba(126,217,87,0.07)"  },
+            { Icon: Banknote,          value: "$122.000M+", label: "Pérdidas económicas",    sub: "Por la emergencia climática",  accent: "#a78bfa", bg: "rgba(167,139,250,0.08)" },
+          ] as const).map(({ Icon, value, label, sub, accent, bg }, i) => (
+            <div key={i}
+              className={`relative flex items-center gap-3 rounded-xl px-3 py-3 ${i === 4 ? "col-span-2" : ""}`}
+              style={{ background: bg, border: `1px solid ${accent}22` }}>
+              <div className="absolute left-0 top-2.5 bottom-2.5 w-[3px] rounded-full" style={{ background: accent }} />
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg" style={{ background: `${accent}18` }}>
+                <Icon size={13} style={{ color: accent }} />
+              </div>
+              <div className="min-w-0">
+                <p className="font-display font-bold leading-none" style={{ fontSize:"clamp(1rem,3.5vw,1.35rem)", color: accent }}>{value}</p>
+                <p className="mt-1 font-mono text-[8px] uppercase tracking-[0.15em] text-paper-0/55">{label}</p>
+                <p className="mt-0.5 text-[9px] text-paper-0/30">{sub}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <p className="mt-2 text-[12px] leading-relaxed text-paper-0/50 sm:mt-3">
+          A estas situaciones se suman las dificultades para supervisar grandes extensiones de terreno, detectar escapes y reconocer oportunamente cambios en el comportamiento y la salud del ganado.
+        </p>
+
+        {/* CTA line */}
+        <div className="mt-2 rounded-xl border border-signal-400/15 bg-gradient-to-r from-signal-400/8 to-transparent p-3 sm:mt-3 sm:rounded-2xl sm:p-4">
+          <p className="text-[12px] leading-relaxed text-paper-0/65">
+            <strong className="text-paper-0">SmartFence</strong> propone integrar <strong className="text-signal-300">geolocalización</strong>, <strong className="text-signal-300">cercado virtual</strong> y <strong className="text-signal-300">monitoreo inteligente</strong> para fortalecer la seguridad, facilitar la supervisión y contribuir al bienestar animal.
+          </p>
+        </div>
+
+      </div>
+    </Shell>
+  );
+}
+
+// ─── slide 4 · Qué es ──────────────────────────────────────────────────────────
 
 const OBJECTIVES = [
-  "Monitorear la ubicación del ganado en tiempo real.",
-  "Detectar salidas de la cerca virtual.",
-  "Generar alertas para el cuidador.",
-  "Reducir pérdidas y facilitar el manejo del ganado.",
-  "Crear una solución tecnológica de bajo costo y escalable.",
+  { Icon: LocateFixed,        text: "Monitorear la ubicación del ganado en tiempo real." },
+  { Icon: ArrowRightFromLine, text: "Detectar salidas de la cerca virtual." },
+  { Icon: Bell,               text: "Generar alertas para el cuidador." },
+  { Icon: ShieldCheck,        text: "Reducir pérdidas y facilitar el manejo del ganado." },
+  { Icon: Zap,                text: "Crear una solución tecnológica de bajo costo y escalable." },
 ];
 
 function S3_QueEs({ isActive = true }: { isActive?: boolean }) {
   return (
     <Shell className="bg-paper-0">
-      <div className="mx-auto w-full max-w-3xl px-4 sm:px-8 md:px-6">
+      <div className="mx-auto w-full max-w-3xl">
 
         {/* Header */}
         <Tag>¿Qué es SmartFence?</Tag>
         <AnimatedTitle isActive={isActive} text="Una herramienta tecnológica para el ganadero." className="mt-1 font-display font-semibold text-forest-900 sm:mt-2" style={{ fontSize:"clamp(1rem,3.5vw,2.2rem)" }} />
 
         {/* Paragraphs */}
-        <p className="mt-2 text-[11px] leading-relaxed text-ink-600 sm:text-sm">
+        <p className="mt-2 text-[12px] leading-relaxed text-ink-600">
           SmartFence es una herramienta tecnológica creada para ayudar a los ganaderos a optimizar sus labores, reducir costos de infraestructura a largo plazo y disminuir el riesgo de pérdida de ganado.
         </p>
-        <p className="mt-1.5 text-[11px] leading-relaxed text-ink-600 sm:text-sm">
+        <p className="mt-1.5 text-[12px] leading-relaxed text-ink-600">
           La solución integra una aplicación de monitoreo y un collar inteligente que permite conocer la ubicación de cada animal mediante GPS, transmitir la información a través de LoRa y visualizarla en un mapa con geocercas virtuales.
         </p>
-        <p className="mt-1.5 text-[11px] leading-relaxed text-ink-600 sm:text-sm">
+        <p className="mt-1.5 text-[12px] leading-relaxed text-ink-600">
           El sistema permite identificar cuándo un animal sale del área establecida, generar alertas y facilitar al productor el seguimiento de su ganado sin tener que realizar constantemente recorridos físicos por toda la finca.
         </p>
 
@@ -262,16 +314,16 @@ function S3_QueEs({ isActive = true }: { isActive?: boolean }) {
 
           {/* Objetivos header */}
           <div className="mb-3 flex items-center gap-2">
-            <Target size={16} className="text-signal-400" />
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-signal-400 sm:text-[11px]">Objetivos</span>
+            <ListChecks size={16} className="text-signal-400" />
+            <span className="font-mono text-[12px] uppercase tracking-[0.2em] text-signal-400 sm:text-[11px]">Objetivos</span>
           </div>
 
           {/* List */}
           <ul className="space-y-2">
-            {OBJECTIVES.map(obj => (
-              <li key={obj} className="flex items-start gap-2.5 text-[11px] leading-snug text-paper-0/85 sm:text-xs">
-                <span className="mt-[3px] h-2 w-2 shrink-0 rounded-full bg-signal-400" />
-                {obj}
+            {OBJECTIVES.map(({ Icon, text }) => (
+              <li key={text} className="flex items-start gap-2.5 text-[12px] leading-snug text-paper-0/85">
+                <Icon size={12} className="mt-[2px] shrink-0 text-signal-400" />
+                {text}
               </li>
             ))}
           </ul>
@@ -281,8 +333,8 @@ function S3_QueEs({ isActive = true }: { isActive?: boolean }) {
             <div className="grid grid-cols-3">
               {[
                 { Icon: MapPin,  l: "GPS",  s: "Ubicación"    },
-                { Icon: Radio,   l: "LoRa", s: "Comunicación" },
-                { Icon: Monitor, l: "Web",  s: "Plataforma"   },
+                { Icon: Signal,  l: "LoRa", s: "Comunicación" },
+                { Icon: Globe,   l: "Web",  s: "Plataforma"   },
               ].map(({ Icon, l, s }, i) => (
                 <div key={l} className={`flex flex-col items-center gap-1.5 ${i < 2 ? "border-r border-paper-0/10" : ""}`}>
                   <Icon size={22} className="text-signal-400" />
@@ -303,7 +355,7 @@ function S3_QueEs({ isActive = true }: { isActive?: boolean }) {
 function S4_ComoFunciona({ isActive = true }: { isActive?: boolean }) {
   return (
     <Shell className="bg-forest-950 text-paper-0">
-      <div className="mx-auto w-full max-w-3xl px-4 sm:px-8 md:px-6">
+      <div className="mx-auto w-full max-w-3xl">
         <Tag light>¿Cómo funciona?</Tag>
         <AnimatedTitle isActive={isActive} text="Diseño y creación del prototipo." light className="mt-1 font-display font-semibold sm:mt-2" style={{ fontSize:"clamp(1rem,3.2vw,2rem)" }} />
 
@@ -312,13 +364,13 @@ function S4_ComoFunciona({ isActive = true }: { isActive?: boolean }) {
 
           {/* columna izquierda: texto + pasos */}
           <div className="flex-1 min-w-0">
-            <p className="text-[10px] leading-relaxed text-paper-0/60 sm:text-xs">
+            <p className="text-[12px] leading-relaxed text-paper-0/60">
               SmartFence AI nace de la integración de hardware y software para desarrollar una
               solución tecnológica orientada a la protección del ganado. Durante la construcción
               del prototipo, integramos los componentes electrónicos, el sistema de alimentación
               y la carcasa que protege los circuitos.
             </p>
-            <p className="mt-2 text-[10px] leading-relaxed text-paper-0/60 sm:text-xs">
+            <p className="mt-2 text-[12px] leading-relaxed text-paper-0/60">
               Cada etapa nos permitió avanzar desde el diseño hasta la implementación de un
               collar inteligente capaz de obtener y transmitir la ubicación del animal.
             </p>
@@ -328,8 +380,8 @@ function S4_ComoFunciona({ isActive = true }: { isActive?: boolean }) {
                 <div key={step.n} className="relative">
                   <div className="rounded-xl border border-paper-0/10 bg-paper-0/5 p-2 h-full">
                     <p className="font-mono text-[9px] text-signal-300">{step.n}</p>
-                    <p className="mt-1 font-display text-[10px] font-semibold sm:text-[11px]">{step.label}</p>
-                    <p className="mt-0.5 text-[9px] leading-relaxed text-paper-0/45 sm:text-[10px]">{step.detail}</p>
+                    <p className="mt-1 font-display text-[12px] font-semibold sm:text-[11px]">{step.label}</p>
+                    <p className="mt-0.5 text-[12px] leading-relaxed text-paper-0/45">{step.detail}</p>
                   </div>
                   {i < STEPS.length - 1 && (
                     <span className="hidden sm:flex absolute top-1/2 -right-2 -translate-y-1/2 text-signal-400/40 z-10 text-xs">→</span>
@@ -360,11 +412,11 @@ function S4_ComoFunciona({ isActive = true }: { isActive?: boolean }) {
 function S5_Prototipo({ isActive = true }: { isActive?: boolean }) {
   return (
     <Shell className="bg-paper-0">
-      <div className="mx-auto grid w-full max-w-3xl gap-4 px-4 sm:px-8 md:grid-cols-2 md:items-center md:gap-8 md:px-6">
+      <div className="mx-auto grid w-full max-w-3xl gap-4 md:grid-cols-2 md:items-center md:gap-8">
         <div>
           <Tag>El collar inteligente</Tag>
           <AnimatedTitle isActive={isActive} text="El prototipo físico, pieza por pieza." className="mt-1 font-display font-semibold text-forest-900 sm:mt-2" style={{ fontSize:"clamp(1rem,3.2vw,2rem)" }} />
-          <p className="mt-1.5 text-[11px] leading-relaxed text-ink-600 sm:text-sm">
+          <p className="mt-1.5 text-[12px] leading-relaxed text-ink-600">
             El GPS obtiene la ubicación del animal y el sistema determina si está dentro o
             fuera de la cerca virtual. La información se transmite mediante LoRa al gateway.
           </p>
@@ -377,10 +429,12 @@ function S5_Prototipo({ isActive = true }: { isActive?: boolean }) {
               { l:"Buzzer",                d:"Estímulo sonoro al detectar salida" },
               { l:"Carcasa IP67",          d:"Resistente al agua y al polvo" },
             ].map(c=>(
-              <div key={c.l} className="flex items-center gap-2 border-b border-forest-800/8 pb-2 last:border-0">
-                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-signal-400" />
-                <span className="font-mono text-[10px] font-medium text-forest-900 sm:text-[11px]">{c.l}</span>
-                <span className="text-[10px] text-ink-500 sm:text-[11px]">— {c.d}</span>
+              <div key={c.l} className="flex items-start gap-2 border-b border-forest-800/8 pb-2 last:border-0">
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-signal-400" />
+                <div className="min-w-0">
+                  <p className="font-mono text-[12px] font-medium text-forest-900 sm:text-[11px]">{c.l}</p>
+                  <p className="text-[12px] text-ink-500">{c.d}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -400,46 +454,33 @@ function S5_Prototipo({ isActive = true }: { isActive?: boolean }) {
 // ─── slide 6 · Plataforma ──────────────────────────────────────────────────────
 
 const PLATFORM_ICONS = [
-  // Geocerca — dashed pentagon
-  <svg key="geo" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7ED957" strokeWidth="1.8" strokeDasharray="3 2.5" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="12,2 21,8.5 17.5,19 6.5,19 3,8.5" />
-  </svg>,
-  // Vacas dentro — circle outline green
-  <svg key="den" width="22" height="22" viewBox="0 0 24 24" fill="none">
-    <circle cx="12" cy="12" r="9" stroke="#7ED957" strokeWidth="2"/>
-  </svg>,
-  // Vacas fuera — circle outline red
-  <svg key="fue" width="22" height="22" viewBox="0 0 24 24" fill="none">
-    <circle cx="12" cy="12" r="9" stroke="#ef4444" strokeWidth="2"/>
-  </svg>,
-  // Ubicación GPS — filled dot green
-  <svg key="gps" width="22" height="22" viewBox="0 0 24 24" fill="none">
-    <circle cx="12" cy="12" r="6" fill="#7ED957"/>
-  </svg>,
-  // Alertas — bell
-  <Bell key="ale" size={20} stroke="#7ED957" fill="none" strokeWidth={1.8} />,
+  <Hexagon     key="geo" size={20} className="text-signal-400" strokeDasharray="3 2" />,
+  <CircleCheck key="den" size={20} className="text-signal-400" />,
+  <CircleX     key="fue" size={20} className="text-red-400" />,
+  <LocateFixed key="gps" size={20} className="text-signal-400" />,
+  <Bell        key="ale" size={20} className="text-signal-400" />,
 ];
 
 function S6_Plataforma({ isActive = true }: { isActive?: boolean }) {
   return (
     <Shell className="bg-paper-0">
-      <div className="mx-auto w-full max-w-3xl px-4 sm:px-8 md:px-6">
+      <div className="mx-auto w-full max-w-3xl">
 
         {/* Header */}
         <Tag>La plataforma</Tag>
         <AnimatedTitle isActive={isActive} text="Cerca virtual, vista desde el mapa." className="mt-1 font-display font-semibold text-forest-900 sm:mt-2" style={{ fontSize:"clamp(1rem,3.2vw,2rem)" }} />
-        <p className="mt-1.5 text-[11px] leading-relaxed text-ink-600 sm:text-sm">
+        <p className="mt-1.5 text-[12px] leading-relaxed text-ink-600">
           La interfaz muestra el perímetro y la posición de cada animal en tiempo real,
           distinguiendo quién está dentro y quién ha salido.
         </p>
 
         {/* Feature row */}
-        <div className="mt-3 grid grid-cols-5 gap-2 border-t border-forest-800/8 pt-3 sm:mt-4 sm:pt-4">
+        <div className="mt-3 grid grid-cols-3 gap-3 border-t border-forest-800/8 pt-3 sm:mt-4 sm:grid-cols-5 sm:gap-2 sm:pt-4">
           {PLATFORM_ITEMS.map((item, i) => (
-            <div key={item.label} className="flex flex-col items-start gap-1">
+            <div key={item.label} className="flex flex-col items-start gap-1.5">
               <div className="flex h-8 w-8 items-center justify-center">{PLATFORM_ICONS[i]}</div>
-              <p className="font-mono text-[9px] font-semibold text-forest-900 sm:text-[10px]">{item.label}</p>
-              <p className="text-[9px] leading-snug text-ink-500 sm:text-[10px]">{item.detail}</p>
+              <p className="font-mono text-[12px] font-semibold text-forest-900">{item.label}</p>
+              <p className="text-[12px] leading-snug text-ink-500">{item.detail}</p>
             </div>
           ))}
         </div>
@@ -464,18 +505,16 @@ function S7_Resultados({ isActive = true }: { isActive?: boolean }) {
 
   return (
     <Shell className="relative bg-forest-950 text-paper-0">
-      <div className="relative z-10 mx-auto w-full max-w-3xl px-4 sm:px-8 md:px-6">
+      <div className="relative z-10 mx-auto w-full max-w-3xl">
 
         {/* Badge */}
         <div className="mb-2 inline-flex items-center gap-2 rounded-full px-3 py-1.5">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7ED957" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M9 3H5v11l7 7 7-7V3h-4"/><line x1="9" y1="3" x2="15" y2="3"/>
-          </svg>
+          <Bookmark size={12} className="text-signal-400" />
           <span className="font-mono text-[8px] uppercase tracking-[0.18em] text-signal-400">Investigación y antecedentes</span>
         </div>
 
         {/* Title bicolor */}
-        <h2 className="font-display font-bold leading-[1.05] sm:mt-1" style={{ fontSize:"clamp(1.4rem,4.5vw,2.6rem)" }}>
+        <h2 className="font-display font-bold leading-[1.05] sm:mt-1" style={{ fontSize:"clamp(1rem,3.2vw,2rem)" }}>
           <span className="text-paper-0">{p1}</span>
           <span className="text-signal-400">{p2}</span>
           <span className="text-paper-0">{p3}</span>
@@ -491,11 +530,11 @@ function S7_Resultados({ isActive = true }: { isActive?: boolean }) {
               <Radio size={18} className="text-signal-400" />
             </div>
             <div className="flex-1">
-              <p className="font-mono text-[9px] uppercase tracking-widest text-signal-400 sm:text-[10px]">LoRa · largo alcance</p>
-              <p className="mt-1 text-[10px] leading-relaxed text-paper-0/70 sm:text-[11px]">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-signal-400">LoRa · largo alcance</p>
+              <p className="mt-1 text-[12px] leading-relaxed text-paper-0/70">
                 Diseñada para IoT de bajo consumo. Alcanza <strong className="text-paper-0">hasta 15 km en zonas rurales</strong> y ~5 km en urbano (Semtech). El alcance real depende de antena, altura y terreno.
               </p>
-              <p className="mt-1 text-[10px] leading-relaxed text-paper-0/50 sm:text-[11px]">
+              <p className="mt-1 text-[12px] leading-relaxed text-paper-0/50">
                 En SmartFence: el collar envía GPS, batería, estado del animal y eventos de alerta al gateway.
               </p>
             </div>
@@ -508,18 +547,18 @@ function S7_Resultados({ isActive = true }: { isActive?: boolean }) {
             </div>
             <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:gap-4">
               <div className="flex-1">
-                <p className="font-mono text-[9px] uppercase tracking-widest text-signal-400 sm:text-[10px]">¿Cómo aprenden las vacas?</p>
-                <p className="mt-1 text-[10px] leading-relaxed text-paper-0/70 sm:text-[11px]">
+                <p className="font-mono text-[10px] uppercase tracking-widest text-signal-400">¿Cómo aprenden las vacas?</p>
+                <p className="mt-1 text-[12px] leading-relaxed text-paper-0/70">
                   Aprendizaje asociativo: <strong className="text-paper-0">Sonido → retrocede → evita la zona.</strong> Con sonido + estímulo controlado, los animales aprenden a responder antes del segundo estímulo.
                 </p>
               </div>
               <ul className="space-y-1 sm:w-44 sm:shrink-0">
                 {[
-                  "≈ 6 interacciones para que el 50 % de 12 novillas aprendiera.",
-                  "≈ 3 eventos acústicos para formar la asociación.",
-                  "≈ 5 eventos para completar el período de aprendizaje.",
+                  "6 interacciones para que el 50 % de 12 novillas aprendiera.",
+                  "3 eventos acústicos para formar la asociación.",
+                  "5 eventos para completar el período de aprendizaje.",
                 ].map(t => (
-                  <li key={t} className="flex items-start gap-1.5 text-[10px] leading-snug text-paper-0/55">
+                  <li key={t} className="flex items-start gap-1.5 text-[12px] leading-snug text-paper-0/55">
                     <span className="mt-[3px] h-1.5 w-1.5 shrink-0 rounded-full bg-signal-400" />
                     {t}
                   </li>
@@ -548,19 +587,19 @@ function S7_Resultados({ isActive = true }: { isActive?: boolean }) {
 function S8_Futuro({ isActive = true }: { isActive?: boolean }) {
   return (
     <Shell className="bg-paper-0">
-      <div className="mx-auto w-full max-w-3xl px-4 sm:px-8 md:px-6">
+      <div className="mx-auto w-full max-w-3xl">
         <Tag>Trabajos futuros</Tag>
-        <AnimatedTitle isActive={isActive} text="De la ubicación al comportamiento." className="mt-1 font-display font-semibold text-forest-900 sm:mt-2" style={{ fontSize:"clamp(1rem,3.2vw,2rem)" }} />
+        <AnimatedTitle isActive={isActive} text="De la ubicación a la prevención." className="mt-1 font-display font-semibold text-forest-900 sm:mt-2" style={{ fontSize:"clamp(1rem,3.2vw,2rem)" }} />
         <div className="mt-3 grid grid-cols-1 gap-2 sm:mt-4 sm:grid-cols-3 sm:gap-3">
           {FUTURE.map(f=>(
             <div key={f.title} className="rounded-xl border border-forest-800/8 bg-paper-50 p-3 sm:rounded-2xl sm:p-4">
               <div className="flex items-center gap-2">
                 <f.Icon size={16} className="shrink-0 text-pasture-600" />
-                <p className="font-display text-xs font-semibold text-forest-900 sm:text-sm">{f.title}</p>
+                <p className="font-display text-[12px] font-semibold text-forest-900">{f.title}</p>
               </div>
               <ul className="mt-2 space-y-1">
                 {f.items.map(item => (
-                  <li key={item} className="flex items-start gap-1.5 text-[10px] leading-snug text-ink-600 sm:text-[11px]">
+                  <li key={item} className="flex items-start gap-1.5 text-[12px] leading-snug text-ink-600">
                     <span className="mt-[3px] h-1 w-1 shrink-0 rounded-full bg-signal-400" />
                     {item}
                   </li>
@@ -570,10 +609,10 @@ function S8_Futuro({ isActive = true }: { isActive?: boolean }) {
           ))}
         </div>
         <div className="mt-3 flex items-start gap-3 rounded-xl border border-pasture-600/20 bg-pasture-600/5 p-3 sm:mt-4 sm:rounded-2xl sm:p-4">
-          <Target size={16} className="mt-0.5 shrink-0 text-pasture-600" />
+          <Rocket size={16} className="mt-0.5 shrink-0 text-pasture-600" />
           <div>
-            <p className="font-display text-xs font-semibold text-forest-900 sm:text-sm">Nuestro objetivo</p>
-            <p className="mt-1 text-[10px] leading-relaxed text-ink-600 sm:text-[11px]">
+            <p className="font-display text-[12px] font-semibold text-forest-900">Nuestro objetivo</p>
+            <p className="mt-1 text-[12px] leading-relaxed text-ink-600">
               Convertir SmartFence en una plataforma inteligente de monitoreo ganadero que combine
               IoT, GPS, LoRa e inteligencia artificial para mejorar la seguridad, el bienestar
               animal y la gestión del ganado.
@@ -590,7 +629,7 @@ function S8_Futuro({ isActive = true }: { isActive?: boolean }) {
 function S9_Cierre({ isActive = true }: { isActive?: boolean }) {
   void isActive;
   return (
-    <div className="relative flex h-full w-full flex-col overflow-hidden px-4 pb-[52px] pt-4 text-paper-0 sm:px-8 sm:pt-6 md:px-12 lg:px-16"
+    <div className="relative flex h-full w-full flex-col overflow-hidden px-8 pb-[52px] pt-6 text-paper-0 sm:px-8 sm:pt-6 md:px-12 lg:px-16"
       style={{ background:"#0B2416" }}>
       {/* cow — full bleed background */}
       <img src="/vaca-32.png" alt="" className="absolute inset-0 h-full w-full object-cover object-center pointer-events-none" />
@@ -622,10 +661,10 @@ function S9_Cierre({ isActive = true }: { isActive?: boolean }) {
         <img
           src="/logo.png"
           alt="SmartFence logo"
-          className="mb-4 w-56 sm:w-68 md:w-80"
+          className="mb-4 w-44 sm:w-64 md:w-80"
           style={{ mixBlendMode: "screen" }}
         />
-        <h2 className="font-display font-semibold max-w-xs leading-tight sm:max-w-md" style={{ fontSize:"clamp(1.2rem,4vw,2.5rem)" }}>
+        <h2 className="font-display font-semibold max-w-xs leading-tight sm:max-w-md" style={{ fontSize:"clamp(1rem,3.2vw,2rem)" }}>
           Tecnología para el monitoreo inteligente del ganado.
         </h2>
         <p className="mt-2 max-w-xs text-[11px] leading-relaxed text-paper-0/50 sm:max-w-sm sm:text-sm sm:mt-3">
@@ -639,7 +678,7 @@ function S9_Cierre({ isActive = true }: { isActive?: boolean }) {
             { Icon: Bell,   label: "Alertas inteligentes"     },
             { Icon: Wifi,   label: "Tecnología IoT"           },
           ] as const).map(({ Icon, label }) => (
-            <span key={label} className="inline-flex items-center gap-1.5 rounded-full border border-signal-400/35 bg-signal-400/8 px-2.5 py-1 font-mono text-[9px] uppercase tracking-widest text-signal-300 sm:px-3 sm:py-1.5 sm:text-[10px]">
+            <span key={label} className="inline-flex items-center gap-1.5 rounded-full border border-signal-400/35 bg-signal-400/8 px-2.5 py-1 font-mono text-[9px] uppercase tracking-widest text-signal-300 sm:px-3 sm:py-1.5 sm:text-[12px]">
               <Icon size={10} className="shrink-0 text-signal-400" />
               {label}
             </span>
@@ -687,19 +726,17 @@ function SlideVideo({ isActive = true }: { isActive?: boolean }) {
   };
 
   return (
-    <div className="flex h-full w-full flex-col bg-forest-950 px-5 pb-[52px] pt-5 text-paper-0 sm:px-10 sm:pt-7">
-      <div className="flex w-full flex-1 flex-col max-w-3xl mx-auto">
+    <div className="flex h-full w-full flex-col bg-forest-950 px-4 pb-[52px] pt-5 text-paper-0 sm:px-6 sm:pt-6">
+      <div className="flex w-full flex-1 flex-col">
 
         {/* Badge */}
         <div className="mb-3 inline-flex w-fit items-center gap-2 rounded-full px-3 py-1.5">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7ED957" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M9 3H5v11l7 7 7-7V3h-4"/><line x1="9" y1="3" x2="15" y2="3"/>
-          </svg>
-          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-signal-400">Experimento</span>
+          <Bookmark size={13} className="text-signal-400" />
+          <span className="font-mono text-[12px] uppercase tracking-[0.2em] text-signal-400">Experimento</span>
         </div>
 
         {/* Title */}
-        <h2 className="font-display font-bold leading-[1.05]" style={{ fontSize:"clamp(1.2rem,3.5vw,2rem)" }}>
+        <h2 className="font-display font-bold leading-[1.05]" style={{ fontSize:"clamp(1rem,3.2vw,2rem)" }}>
           Prueba del{" "}
           <span className="text-signal-400">collar</span>{" "}
           en finca.
@@ -715,11 +752,13 @@ function SlideVideo({ isActive = true }: { isActive?: boolean }) {
 
           {/* VIDEO 1 */}
           <div className={`absolute inset-0 transition-opacity duration-500 ${showSecond ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
-            {/* móvil */}
-            <div className="relative mx-auto block overflow-hidden rounded-2xl border border-paper-0/10 bg-forest-900 sm:hidden"
-                 style={{ width: "72vw", aspectRatio: "9/16", maxHeight: "72svh" }}>
-              <video ref={v1MobileRef} className="absolute inset-0 h-full w-full object-cover"
-                src="/prueba-campo.mp4" controls muted playsInline onEnded={onFirstEnded} />
+            {/* móvil — centrado vertical y horizontal */}
+            <div className="flex h-full items-center justify-center sm:hidden">
+              <div className="relative h-full overflow-hidden rounded-2xl border border-paper-0/10 bg-forest-900"
+                   style={{ aspectRatio: "9/16", maxWidth: "90vw" }}>
+                <video ref={v1MobileRef} className="absolute inset-0 h-full w-full object-cover object-[75%_15%]"
+                  src="/prueba-campo.mp4" controls muted playsInline onEnded={onFirstEnded} />
+              </div>
             </div>
             {/* desktop */}
             <div className="relative hidden h-full w-full overflow-hidden rounded-3xl border border-paper-0/10 bg-forest-900 sm:block">
@@ -730,11 +769,13 @@ function SlideVideo({ isActive = true }: { isActive?: boolean }) {
 
           {/* VIDEO 2 */}
           <div className={`absolute inset-0 transition-opacity duration-500 ${showSecond ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
-            {/* móvil */}
-            <div className="relative mx-auto block overflow-hidden rounded-2xl border border-paper-0/10 bg-forest-900 sm:hidden"
-                 style={{ width: "72vw", aspectRatio: "9/16", maxHeight: "72svh" }}>
-              <video ref={v2MobileRef} className="absolute inset-0 h-full w-full object-cover"
-                src="/smartfence2.mp4" controls muted playsInline />
+            {/* móvil — centrado vertical y horizontal */}
+            <div className="flex h-full items-center justify-center sm:hidden">
+              <div className="relative h-full overflow-hidden rounded-2xl border border-paper-0/10 bg-forest-900"
+                   style={{ aspectRatio: "9/16", maxWidth: "90vw" }}>
+                <video ref={v2MobileRef} className="absolute inset-0 h-full w-full object-cover"
+                  src="/smartfence2.mp4" controls muted playsInline />
+              </div>
             </div>
             {/* desktop */}
             <div className="relative hidden h-full w-full overflow-hidden rounded-3xl border border-paper-0/10 bg-forest-900 sm:block">
@@ -796,7 +837,7 @@ function PresentationSlider() {
   const [showControls, setShowControls] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const total = 9;
+  const total = 10;
 
   const revealControls = useCallback(() => {
     setShowControls(true);
@@ -828,15 +869,16 @@ function PresentationSlider() {
   useSwipe(wrapRef, next, prev);
 
   const slides = [
-    <S1_Hero         isActive={cur === 0} />,
-    <SlideVideo isActive={cur === 1} />,
-    <S3_QueEs        isActive={cur === 2} />,
-    <S4_ComoFunciona isActive={cur === 3} />,
-    <S5_Prototipo    isActive={cur === 4} />,
-    <S6_Plataforma   isActive={cur === 5} />,
-    <S7_Resultados   isActive={cur === 6} />,
-    <S8_Futuro       isActive={cur === 7} />,
-    <S9_Cierre       isActive={cur === 8} />,
+    <S1_Hero           isActive={cur === 0} />,
+    <SlideVideo        isActive={cur === 1} />,
+    <S3_Problematica   isActive={cur === 2} />,
+    <S3_QueEs          isActive={cur === 3} />,
+    <S4_ComoFunciona   isActive={cur === 4} />,
+    <S5_Prototipo      isActive={cur === 5} />,
+    <S6_Plataforma     isActive={cur === 6} />,
+    <S7_Resultados     isActive={cur === 7} />,
+    <S8_Futuro         isActive={cur === 8} />,
+    <S9_Cierre         isActive={cur === 9} />,
   ];
 
   const btnVis = `transition-opacity duration-300 ${showControls ? "opacity-100" : "opacity-0 sm:opacity-100"}`;
@@ -861,22 +903,18 @@ function PresentationSlider() {
       {/* prev arrow */}
       {cur > 0 && (
         <button onClick={prev} aria-label="Anterior"
-          className={`absolute left-2 top-1/2 -translate-y-1/2 z-50 flex h-8 w-8 items-center justify-center rounded-full border border-white/25 bg-black/45 text-white backdrop-blur-sm transition-all active:scale-90 sm:left-3 sm:h-11 sm:w-11 ${btnVis}`}
+          className={`absolute left-3 top-1/2 -translate-y-1/2 z-50 flex h-8 w-8 items-center justify-center rounded-full border border-white/25 bg-black/45 text-white backdrop-blur-sm transition-all active:scale-90 sm:left-3 sm:h-11 sm:w-11 ${btnVis}`}
           style={{ touchAction:"manipulation" }}>
-          <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
-          </svg>
+          <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" strokeWidth={2.5} />
         </button>
       )}
 
       {/* next arrow */}
       {cur < total - 1 && (
         <button onClick={next} aria-label="Siguiente"
-          className={`absolute right-2 top-1/2 -translate-y-1/2 z-50 flex h-8 w-8 items-center justify-center rounded-full border border-white/25 bg-black/45 text-white backdrop-blur-sm transition-all active:scale-90 sm:right-3 sm:h-11 sm:w-11 ${btnVis}`}
+          className={`absolute right-3 top-1/2 -translate-y-1/2 z-50 flex h-8 w-8 items-center justify-center rounded-full border border-white/25 bg-black/45 text-white backdrop-blur-sm transition-all active:scale-90 sm:right-3 sm:h-11 sm:w-11 ${btnVis}`}
           style={{ touchAction:"manipulation" }}>
-          <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
-          </svg>
+          <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" strokeWidth={2.5} />
         </button>
       )}
 
