@@ -423,7 +423,7 @@ function S4_ComoFunciona({ isActive = true }: { isActive?: boolean }) {
                 key={i}
                 type="button"
                 onClick={() => open(src)}
-                className="group overflow-hidden rounded-xl border border-paper-0/10 sm:rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-signal-400"
+                className="group overflow-hidden rounded-xl border border-paper-0/10 sm:rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-signal-400 last:col-span-2 last:justify-self-center last:w-1/2 sm:last:col-span-1 sm:last:w-full"
               >
                 <img
                   src={src}
