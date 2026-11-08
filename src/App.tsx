@@ -575,10 +575,7 @@ function S7_Resultados({ isActive = true }: { isActive?: boolean }) {
           <div className="grid grid-cols-1 gap-2 sm:gap-3">
 
             {/* LoRa card */}
-            <div className="flex items-start gap-3 rounded-xl bg-paper-0/5 p-3 sm:rounded-2xl sm:p-4">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-signal-400/15 sm:h-10 sm:w-10">
-                <Radio size={18} className="text-signal-400" />
-              </div>
+            <div className="rounded-xl bg-paper-0/5 p-3 sm:rounded-2xl sm:p-4">
               <div className="flex-1">
                 <p className="font-mono text-[10px] uppercase tracking-widest text-signal-400">LoRa · largo alcance</p>
                 <p className="mt-1 text-[12px] leading-relaxed text-paper-0/70">
@@ -591,10 +588,7 @@ function S7_Resultados({ isActive = true }: { isActive?: boolean }) {
             </div>
 
             {/* Vacas card */}
-            <div className="flex items-start gap-3 rounded-xl bg-paper-0/5 p-3 sm:rounded-2xl sm:p-4">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-signal-400/15 sm:h-10 sm:w-10">
-                <Volume2 size={18} className="text-signal-400" />
-              </div>
+            <div className="rounded-xl bg-paper-0/5 p-3 sm:rounded-2xl sm:p-4">
               <div className="flex-1">
                 <p className="font-mono text-[10px] uppercase tracking-widest text-signal-400">¿Cómo aprenden las vacas?</p>
                 <p className="mt-1 text-[12px] leading-relaxed text-paper-0/70">
