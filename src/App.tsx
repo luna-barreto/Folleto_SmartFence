@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
-import { Sparkles, Stethoscope, Layers, Rocket, ListChecks, MapPin, Bell, Wifi, Radio, Volume2, Monitor, ShieldOff, ShieldCheck, TrendingDown, Flame, ArrowRightFromLine, Banknote, ChevronLeft, ChevronRight, Hexagon, CircleCheck, CircleX, LocateFixed, Bookmark, Signal, Globe, Zap, X } from "lucide-react";
+import { Sparkles, Stethoscope, Layers, Rocket, ListChecks, MapPin, Bell, Wifi, Radio, Volume2, ShieldOff, ShieldCheck, TrendingDown, Flame, ArrowRightFromLine, Banknote, ChevronLeft, ChevronRight, Hexagon, CircleCheck, CircleX, LocateFixed, Bookmark, Signal, Globe, Zap, X } from "lucide-react";
 import platformScreenshot from "./assets/platform-screenshot.png";
 
 // ─── data ──────────────────────────────────────────────────────────────────────
