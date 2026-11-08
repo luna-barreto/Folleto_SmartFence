@@ -9,9 +9,7 @@ const STEPS = [
   { n: "01", label: "Collar",     detail: "El animal lleva el dispositivo." },
   { n: "02", label: "GPS",        detail: "Calcula la posición del animal." },
   { n: "03", label: "LoRa",       detail: "Transmite a larga distancia." },
-  { n: "04", label: "Gateway",    detail: "Recibe y reenvía la señal." },
-  { n: "05", label: "Plataforma", detail: "Ubica al animal en el mapa." },
-  { n: "06", label: "Alerta",     detail: "Notifica la salida del perímetro." },
+  { n: "04", label: "Plataforma", detail: "Ubica al animal en el mapa." },
 ];
 
 
