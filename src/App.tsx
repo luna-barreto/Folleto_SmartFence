@@ -77,7 +77,7 @@ function Shell({ children, className = "", style = {} }: { children: React.React
       style={style}
     >
       {/* inner scroll area — allows scrolling ONLY if content genuinely overflows on very small devices */}
-      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden px-10 pb-[52px] pt-8 sm:px-10 sm:pt-8 md:px-14 lg:px-20">
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden px-6 pb-[52px] pt-6 sm:px-8 sm:pt-6 md:px-10 lg:px-14">
         {children}
       </div>
     </div>
