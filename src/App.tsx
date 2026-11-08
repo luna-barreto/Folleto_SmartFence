@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Sparkles, Stethoscope, Layers, Rocket, ListChecks, MapPin, Bell, Wifi, Radio, Volume2, Monitor, ShieldOff, ShieldCheck, TrendingDown, Flame, ArrowRightFromLine, Banknote, ChevronLeft, ChevronRight, Hexagon, CircleCheck, CircleX, LocateFixed, Bookmark, Signal, Globe, Zap } from "lucide-react";
+import { createPortal } from "react-dom";
+import { Sparkles, Stethoscope, Layers, Rocket, ListChecks, MapPin, Bell, Wifi, Radio, Volume2, Monitor, ShieldOff, ShieldCheck, TrendingDown, Flame, ArrowRightFromLine, Banknote, ChevronLeft, ChevronRight, Hexagon, CircleCheck, CircleX, LocateFixed, Bookmark, Signal, Globe, Zap, X } from "lucide-react";
 import platformScreenshot from "./assets/platform-screenshot.png";
 
 // ─── data ──────────────────────────────────────────────────────────────────────
@@ -298,50 +299,48 @@ function S3_QueEs({ isActive = true }: { isActive?: boolean }) {
         <Tag>¿Qué es SmartFence?</Tag>
         <AnimatedTitle isActive={isActive} text="Una herramienta tecnológica para el ganadero." className="mt-1 font-display font-semibold text-forest-900 sm:mt-2" style={{ fontSize:"clamp(1rem,3.5vw,2.2rem)" }} />
 
-        {/* Paragraphs */}
-        <p className="mt-2 text-[12px] leading-relaxed text-ink-600">
-          SmartFence es una herramienta tecnológica creada para ayudar a los ganaderos a optimizar sus labores, reducir costos de infraestructura a largo plazo y disminuir el riesgo de pérdida de ganado.
-        </p>
-        <p className="mt-1.5 text-[12px] leading-relaxed text-ink-600">
-          La solución integra una aplicación de monitoreo y un collar inteligente que permite conocer la ubicación de cada animal mediante GPS, transmitir la información a través de LoRa y visualizarla en un mapa con geocercas virtuales.
-        </p>
-        <p className="mt-1.5 text-[12px] leading-relaxed text-ink-600">
-          El sistema permite identificar cuándo un animal sale del área establecida, generar alertas y facilitar al productor el seguimiento de su ganado sin tener que realizar constantemente recorridos físicos por toda la finca.
-        </p>
-
-        {/* Dark objectives card */}
-        <div className="mt-3 rounded-2xl bg-forest-900 p-4 text-paper-0 sm:mt-4 sm:p-5">
-
-          {/* Objetivos header */}
-          <div className="mb-3 flex items-center gap-2">
-            <ListChecks size={16} className="text-signal-400" />
-            <span className="font-mono text-[12px] uppercase tracking-[0.2em] text-signal-400 sm:text-[11px]">Objetivos</span>
+        <div className="mt-3 flex flex-col gap-4 md:grid md:grid-cols-2 md:items-start md:gap-6">
+          {/* Párrafos */}
+          <div className="space-y-2">
+            <p className="text-[12px] leading-relaxed text-ink-600">
+              SmartFence es una herramienta tecnológica creada para ayudar a los ganaderos a optimizar sus labores, reducir costos de infraestructura a largo plazo y disminuir el riesgo de pérdida de ganado.
+            </p>
+            <p className="text-[12px] leading-relaxed text-ink-600">
+              La solución integra una aplicación de monitoreo y un collar inteligente que permite conocer la ubicación de cada animal mediante GPS, transmitir la información a través de LoRa y visualizarla en un mapa con geocercas virtuales.
+            </p>
+            <p className="text-[12px] leading-relaxed text-ink-600">
+              El sistema permite identificar cuándo un animal sale del área establecida, generar alertas y facilitar al productor el seguimiento de su ganado sin tener que realizar constantemente recorridos físicos por toda la finca.
+            </p>
           </div>
 
-          {/* List */}
-          <ul className="space-y-2">
-            {OBJECTIVES.map(({ Icon, text }) => (
-              <li key={text} className="flex items-start gap-2.5 text-[12px] leading-snug text-paper-0/85">
-                <Icon size={12} className="mt-[2px] shrink-0 text-signal-400" />
-                {text}
-              </li>
-            ))}
-          </ul>
-
-          {/* Divider + tech row */}
-          <div className="mt-4 border-t border-paper-0/10 pt-4">
-            <div className="grid grid-cols-3">
-              {[
-                { Icon: MapPin,  l: "GPS",  s: "Ubicación"    },
-                { Icon: Signal,  l: "LoRa", s: "Comunicación" },
-                { Icon: Globe,   l: "Web",  s: "Plataforma"   },
-              ].map(({ Icon, l, s }, i) => (
-                <div key={l} className={`flex flex-col items-center gap-1.5 ${i < 2 ? "border-r border-paper-0/10" : ""}`}>
-                  <Icon size={22} className="text-signal-400" />
-                  <p className="font-mono text-sm font-semibold text-signal-300">{l}</p>
-                  <p className="font-mono text-[9px] uppercase tracking-widest text-paper-0/45">{s}</p>
-                </div>
+          {/* Dark objectives card */}
+          <div className="rounded-2xl bg-forest-900 p-4 text-paper-0 sm:p-5">
+            <div className="mb-3 flex items-center gap-2">
+              <ListChecks size={16} className="text-signal-400" />
+              <span className="font-mono text-[12px] uppercase tracking-[0.2em] text-signal-400 sm:text-[11px]">Objetivos</span>
+            </div>
+            <ul className="space-y-2">
+              {OBJECTIVES.map(({ Icon, text }) => (
+                <li key={text} className="flex items-start gap-2.5 text-[12px] leading-snug text-paper-0/85">
+                  <Icon size={12} className="mt-[2px] shrink-0 text-signal-400" />
+                  {text}
+                </li>
               ))}
+            </ul>
+            <div className="mt-4 border-t border-paper-0/10 pt-4">
+              <div className="grid grid-cols-3">
+                {[
+                  { Icon: MapPin,  l: "GPS",  s: "Ubicación"    },
+                  { Icon: Signal,  l: "LoRa", s: "Comunicación" },
+                  { Icon: Globe,   l: "Web",  s: "Plataforma"   },
+                ].map(({ Icon, l, s }, i) => (
+                  <div key={l} className={`flex flex-col items-center gap-1.5 ${i < 2 ? "border-r border-paper-0/10" : ""}`}>
+                    <Icon size={22} className="text-signal-400" />
+                    <p className="font-mono text-sm font-semibold text-signal-300">{l}</p>
+                    <p className="font-mono text-[9px] uppercase tracking-widest text-paper-0/45">{s}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -350,59 +349,96 @@ function S3_QueEs({ isActive = true }: { isActive?: boolean }) {
   );
 }
 
+// ─── shared lightbox hook ──────────────────────────────────────────────────────
+
+function useLightbox() {
+  const [src, setSrc] = useState<string | null>(null);
+
+  const portal = src ? createPortal(
+    <div
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/85 backdrop-blur-sm"
+      onClick={() => setSrc(null)}
+    >
+      <img
+        src={src}
+        alt="Foto ampliada"
+        className="max-h-[88vh] max-w-[92vw] w-auto h-auto rounded-2xl object-contain shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      />
+      <button
+        type="button"
+        aria-label="Cerrar"
+        onClick={() => setSrc(null)}
+        className="absolute top-4 right-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white/80 hover:bg-white/20 hover:text-white transition-colors"
+      >
+        <X size={18} />
+      </button>
+    </div>,
+    document.body
+  ) : null;
+
+  return { open: setSrc, portal };
+}
+
 // ─── slide 4 · Cómo funciona ───────────────────────────────────────────────────
 
 function S4_ComoFunciona({ isActive = true }: { isActive?: boolean }) {
+  const { open, portal } = useLightbox();
+
   return (
     <Shell className="bg-forest-950 text-paper-0">
       <div className="mx-auto w-full max-w-3xl">
         <Tag light>¿Cómo funciona?</Tag>
         <AnimatedTitle isActive={isActive} text="Diseño y creación del prototipo." light className="mt-1 font-display font-semibold sm:mt-2" style={{ fontSize:"clamp(1rem,3.2vw,2rem)" }} />
 
-        {/* layout 2 columnas en desktop */}
-        <div className="mt-3 flex flex-col gap-3 sm:mt-4 md:flex-row md:items-start md:gap-6">
+        <div className="mt-3 sm:mt-4">
+          <p className="text-[12px] leading-relaxed text-paper-0/60">
+            SmartFence AI nace de la integración de hardware y software para desarrollar una
+            solución tecnológica orientada a la protección del ganado. Durante la construcción
+            del prototipo, integramos los componentes electrónicos, el sistema de alimentación
+            y la carcasa que protege los circuitos.
+          </p>
+          <p className="mt-2 text-[12px] leading-relaxed text-paper-0/60">
+            Cada etapa nos permitió avanzar desde el diseño hasta la implementación de un
+            collar inteligente capaz de obtener y transmitir la ubicación del animal.
+          </p>
 
-          {/* columna izquierda: texto + pasos */}
-          <div className="flex-1 min-w-0">
-            <p className="text-[12px] leading-relaxed text-paper-0/60">
-              SmartFence AI nace de la integración de hardware y software para desarrollar una
-              solución tecnológica orientada a la protección del ganado. Durante la construcción
-              del prototipo, integramos los componentes electrónicos, el sistema de alimentación
-              y la carcasa que protege los circuitos.
-            </p>
-            <p className="mt-2 text-[12px] leading-relaxed text-paper-0/60">
-              Cada etapa nos permitió avanzar desde el diseño hasta la implementación de un
-              collar inteligente capaz de obtener y transmitir la ubicación del animal.
-            </p>
-
-            <div className="mt-3 grid grid-cols-2 gap-1.5 sm:grid-cols-3 sm:gap-2">
-              {STEPS.map((step, i) => (
-                <div key={step.n} className="relative">
-                  <div className="rounded-xl border border-paper-0/10 bg-paper-0/5 p-2 h-full">
-                    <p className="font-mono text-[9px] text-signal-300">{step.n}</p>
-                    <p className="mt-1 font-display text-[12px] font-semibold sm:text-[11px]">{step.label}</p>
-                    <p className="mt-0.5 text-[12px] leading-relaxed text-paper-0/45">{step.detail}</p>
-                  </div>
-                  {i < STEPS.length - 1 && (
-                    <span className="hidden sm:flex absolute top-1/2 -right-2 -translate-y-1/2 text-signal-400/40 z-10 text-xs">→</span>
-                  )}
+          <div className="mt-3 grid grid-cols-2 gap-1.5 sm:grid-cols-3 sm:gap-2">
+            {STEPS.map((step, i) => (
+              <div key={step.n} className="relative">
+                <div className="rounded-xl border border-paper-0/10 bg-paper-0/5 p-2 h-full">
+                  <p className="font-mono text-[9px] text-signal-300">{step.n}</p>
+                  <p className="mt-1 font-display text-[12px] font-semibold sm:text-[11px]">{step.label}</p>
+                  <p className="mt-0.5 text-[12px] leading-relaxed text-paper-0/45">{step.detail}</p>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* columna derecha: galería de imágenes */}
-          <div className="flex gap-1.5 md:flex-col md:w-44 md:gap-2 shrink-0">
-            {["/proto1.jpg", "/proto2.jpg", "/proto3.jpg"].map((src, i) => (
-              <div key={i} className="flex-1 md:flex-none overflow-hidden rounded-xl border border-paper-0/10 md:rounded-2xl">
-                <img src={src} alt={`Construcción prototipo ${i + 1}`}
-                  className="w-full h-full object-cover aspect-square md:aspect-auto md:h-24" />
+                {i < STEPS.length - 1 && (
+                  <span className="hidden sm:flex absolute top-1/2 -right-2 -translate-y-1/2 text-signal-400/40 z-10 text-xs">→</span>
+                )}
               </div>
             ))}
           </div>
 
+          {/* galería de imágenes — clic para ampliar */}
+          <div className="mt-3 grid grid-cols-3 gap-2 sm:mt-4 sm:gap-3">
+            {["/proto1.jpg", "/proto2.jpg", "/proto3.jpg"].map((src, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => open(src)}
+                className="group overflow-hidden rounded-xl border border-paper-0/10 sm:rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-signal-400"
+              >
+                <img
+                  src={src}
+                  alt={`Construcción prototipo ${i + 1}`}
+                  className="w-full object-cover aspect-[4/3] transition-transform duration-300 group-hover:scale-105"
+                />
+              </button>
+            ))}
+          </div>
         </div>
       </div>
+
+      {portal}
     </Shell>
   );
 }
@@ -410,6 +446,7 @@ function S4_ComoFunciona({ isActive = true }: { isActive?: boolean }) {
 // ─── slide 5 · Prototipo ───────────────────────────────────────────────────────
 
 function S5_Prototipo({ isActive = true }: { isActive?: boolean }) {
+  const { open, portal } = useLightbox();
   return (
     <Shell className="bg-paper-0">
       <div className="mx-auto grid w-full max-w-3xl gap-4 md:grid-cols-2 md:items-center md:gap-8">
@@ -439,14 +476,19 @@ function S5_Prototipo({ isActive = true }: { isActive?: boolean }) {
             ))}
           </div>
         </div>
-        <figure className="overflow-hidden rounded-xl border border-forest-800/10 shadow-sm sm:rounded-2xl">
+        <button
+          type="button"
+          onClick={() => open("/collar-final.jpg")}
+          className="group overflow-hidden rounded-xl border border-forest-800/10 shadow-sm sm:rounded-2xl md:max-h-[65vh] focus:outline-none focus-visible:ring-2 focus-visible:ring-signal-400"
+        >
           <img
             src="/collar-final.jpg"
             alt="Collar SmartFence"
-            className="w-full h-auto"
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
-        </figure>
+        </button>
       </div>
+      {portal}
     </Shell>
   );
 }
@@ -462,34 +504,38 @@ const PLATFORM_ICONS = [
 ];
 
 function S6_Plataforma({ isActive = true }: { isActive?: boolean }) {
+  const { open, portal } = useLightbox();
   return (
     <Shell className="bg-paper-0">
-      <div className="mx-auto w-full max-w-3xl">
-
-        {/* Header */}
-        <Tag>La plataforma</Tag>
-        <AnimatedTitle isActive={isActive} text="Cerca virtual, vista desde el mapa." className="mt-1 font-display font-semibold text-forest-900 sm:mt-2" style={{ fontSize:"clamp(1rem,3.2vw,2rem)" }} />
-        <p className="mt-1.5 text-[12px] leading-relaxed text-ink-600">
-          La interfaz muestra el perímetro y la posición de cada animal en tiempo real,
-          distinguiendo quién está dentro y quién ha salido.
-        </p>
-
-        {/* Feature row */}
-        <div className="mt-3 grid grid-cols-3 gap-3 border-t border-forest-800/8 pt-3 sm:mt-4 sm:grid-cols-5 sm:gap-2 sm:pt-4">
-          {PLATFORM_ITEMS.map((item, i) => (
-            <div key={item.label} className="flex flex-col items-start gap-1.5">
-              <div className="flex h-8 w-8 items-center justify-center">{PLATFORM_ICONS[i]}</div>
-              <p className="font-mono text-[12px] font-semibold text-forest-900">{item.label}</p>
-              <p className="text-[12px] leading-snug text-ink-500">{item.detail}</p>
+      <div className="mx-auto w-full max-w-5xl">
+        <div className="flex flex-col gap-4 md:grid md:grid-cols-2 md:items-center md:gap-8">
+          <div>
+            <Tag>La plataforma</Tag>
+            <AnimatedTitle isActive={isActive} text="Cerca virtual, vista desde el mapa." className="mt-1 font-display font-semibold text-forest-900 sm:mt-2" style={{ fontSize:"clamp(1rem,3.2vw,2rem)" }} />
+            <p className="mt-1.5 text-[12px] leading-relaxed text-ink-600">
+              La interfaz muestra el perímetro y la posición de cada animal en tiempo real,
+              distinguiendo quién está dentro y quién ha salido.
+            </p>
+            <div className="mt-3 grid grid-cols-3 gap-3 border-t border-forest-800/8 pt-3 sm:mt-4 sm:grid-cols-5 sm:gap-2 sm:pt-4">
+              {PLATFORM_ITEMS.map((item, i) => (
+                <div key={item.label} className="flex flex-col items-start gap-1.5">
+                  <div className="flex h-8 w-8 items-center justify-center">{PLATFORM_ICONS[i]}</div>
+                  <p className="font-mono text-[12px] font-semibold text-forest-900">{item.label}</p>
+                  <p className="text-[12px] leading-snug text-ink-500">{item.detail}</p>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+          <button
+            type="button"
+            onClick={() => open(platformScreenshot)}
+            className="group overflow-hidden rounded-2xl border border-forest-800/10 shadow-[0_8px_30px_rgba(11,36,22,0.10)] md:flex md:items-start focus:outline-none focus-visible:ring-2 focus-visible:ring-signal-400"
+          >
+            <img src={platformScreenshot} alt="Plataforma SmartFence" className="w-full h-auto md:max-h-[58vh] md:object-cover md:object-top transition-transform duration-300 group-hover:scale-[1.03]" />
+          </button>
         </div>
-
-        {/* Map screenshot */}
-        <figure className="mt-3 overflow-hidden rounded-2xl border border-forest-800/10 shadow-[0_8px_30px_rgba(11,36,22,0.10)] sm:mt-4">
-          <img src={platformScreenshot} alt="Plataforma SmartFence" className="w-full h-auto" />
-        </figure>
       </div>
+      {portal}
     </Shell>
   );
 }
@@ -497,6 +543,7 @@ function S6_Plataforma({ isActive = true }: { isActive?: boolean }) {
 // ─── slide 7 · Resultados ──────────────────────────────────────────────────────
 
 function S7_Resultados({ isActive = true }: { isActive?: boolean }) {
+  const { open, portal } = useLightbox();
   const TITLE = "La ciencia respalda el sistema.";
   const { text: titleText, done: titleDone } = useTypewriter(TITLE, 42, 180, isActive);
   const p1 = titleText.slice(0, 11);
@@ -505,7 +552,7 @@ function S7_Resultados({ isActive = true }: { isActive?: boolean }) {
 
   return (
     <Shell className="relative bg-forest-950 text-paper-0">
-      <div className="relative z-10 mx-auto w-full max-w-3xl">
+      <div className="relative z-10 mx-auto w-full max-w-3xl md:max-w-5xl">
 
         {/* Badge */}
         <div className="mb-2 inline-flex items-center gap-2 rounded-full px-3 py-1.5">
@@ -521,63 +568,70 @@ function S7_Resultados({ isActive = true }: { isActive?: boolean }) {
           {!titleDone && <span className="cursor-blink text-signal-400">|</span>}
         </h2>
 
-        {/* Cards */}
-        <div className="mt-3 flex flex-col gap-2 sm:gap-3">
+        {/* Cards + chart — mobile stacked, desktop side by side */}
+        <div className="mt-3 md:grid md:grid-cols-2 md:gap-6 md:items-start">
 
-          {/* LoRa card */}
-          <div className="flex items-start gap-3 rounded-xl bg-paper-0/5 p-3 sm:rounded-2xl sm:p-4">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-signal-400/15 sm:h-10 sm:w-10">
-              <Radio size={18} className="text-signal-400" />
-            </div>
-            <div className="flex-1">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-signal-400">LoRa · largo alcance</p>
-              <p className="mt-1 text-[12px] leading-relaxed text-paper-0/70">
-                Diseñada para IoT de bajo consumo. Alcanza <strong className="text-paper-0">hasta 15 km en zonas rurales</strong> y ~5 km en urbano (Semtech). El alcance real depende de antena, altura y terreno.
-              </p>
-              <p className="mt-1 text-[12px] leading-relaxed text-paper-0/50">
-                En SmartFence: el collar envía GPS, batería, estado del animal y eventos de alerta al gateway.
-              </p>
-            </div>
-          </div>
+          {/* Cards column */}
+          <div className="grid grid-cols-1 gap-2 sm:gap-3">
 
-          {/* Vacas card */}
-          <div className="flex items-start gap-3 rounded-xl bg-paper-0/5 p-3 sm:rounded-2xl sm:p-4">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-signal-400/15 sm:h-10 sm:w-10">
-              <Volume2 size={18} className="text-signal-400" />
+            {/* LoRa card */}
+            <div className="flex items-start gap-3 rounded-xl bg-paper-0/5 p-3 sm:rounded-2xl sm:p-4">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-signal-400/15 sm:h-10 sm:w-10">
+                <Radio size={18} className="text-signal-400" />
+              </div>
+              <div className="flex-1">
+                <p className="font-mono text-[10px] uppercase tracking-widest text-signal-400">LoRa · largo alcance</p>
+                <p className="mt-1 text-[12px] leading-relaxed text-paper-0/70">
+                  Diseñada para IoT de bajo consumo. Alcanza <strong className="text-paper-0">hasta 15 km en zonas rurales</strong> y ~5 km en urbano (Semtech). El alcance real depende de antena, altura y terreno.
+                </p>
+                <p className="mt-1 text-[12px] leading-relaxed text-paper-0/50">
+                  En SmartFence: el collar envía GPS, batería, estado del animal y eventos de alerta al gateway.
+                </p>
+              </div>
             </div>
-            <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:gap-4">
+
+            {/* Vacas card */}
+            <div className="flex items-start gap-3 rounded-xl bg-paper-0/5 p-3 sm:rounded-2xl sm:p-4">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-signal-400/15 sm:h-10 sm:w-10">
+                <Volume2 size={18} className="text-signal-400" />
+              </div>
               <div className="flex-1">
                 <p className="font-mono text-[10px] uppercase tracking-widest text-signal-400">¿Cómo aprenden las vacas?</p>
                 <p className="mt-1 text-[12px] leading-relaxed text-paper-0/70">
                   Aprendizaje asociativo: <strong className="text-paper-0">Sonido → retrocede → evita la zona.</strong> Con sonido + estímulo controlado, los animales aprenden a responder antes del segundo estímulo.
                 </p>
+                <ul className="mt-1.5 space-y-1">
+                  {[
+                    "6 interacciones para que el 50 % de 12 novillas aprendiera.",
+                    "3 eventos acústicos para formar la asociación.",
+                    "5 eventos para completar el período de aprendizaje.",
+                  ].map(t => (
+                    <li key={t} className="flex items-start gap-1.5 text-[12px] leading-snug text-paper-0/55">
+                      <span className="mt-[3px] h-1.5 w-1.5 shrink-0 rounded-full bg-signal-400" />
+                      {t}
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <ul className="space-y-1 sm:w-44 sm:shrink-0">
-                {[
-                  "6 interacciones para que el 50 % de 12 novillas aprendiera.",
-                  "3 eventos acústicos para formar la asociación.",
-                  "5 eventos para completar el período de aprendizaje.",
-                ].map(t => (
-                  <li key={t} className="flex items-start gap-1.5 text-[12px] leading-snug text-paper-0/55">
-                    <span className="mt-[3px] h-1.5 w-1.5 shrink-0 rounded-full bg-signal-400" />
-                    {t}
-                  </li>
-                ))}
-              </ul>
             </div>
           </div>
-        </div>
 
-        {/* chart */}
-        <div className="mt-2 sm:mt-3">
-          <figure className="overflow-hidden rounded-xl border border-paper-0/10 bg-paper-50">
-            <img src="/research-chart.png" alt="Progresión del aprendizaje asociativo ganadero" className="w-full h-auto" />
-          </figure>
-          <p className="mt-1.5 text-[9px] leading-relaxed text-paper-0/35">
-            Los estímulos eléctricos disminuyen a medida que el animal aprende a responder solo al tono sonoro. (Confessore et al., 2022 · Fuchs et al., 2024)
-          </p>
+          {/* Chart column */}
+          <div className="mt-2 sm:mt-3 md:mt-0">
+            <button
+              type="button"
+              onClick={() => open("/research-chart.png")}
+              className="group w-full overflow-hidden rounded-xl border border-paper-0/10 bg-paper-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-signal-400"
+            >
+              <img src="/research-chart.png" alt="Progresión del aprendizaje asociativo ganadero" className="w-full h-auto transition-transform duration-300 group-hover:scale-[1.03]" />
+            </button>
+            <p className="mt-1.5 text-[9px] leading-relaxed text-paper-0/35">
+              Los estímulos eléctricos disminuyen a medida que el animal aprende a responder solo al tono sonoro. (Confessore et al., 2022 · Fuchs et al., 2024)
+            </p>
+          </div>
         </div>
       </div>
+      {portal}
     </Shell>
   );
 }
@@ -684,6 +738,14 @@ function S9_Cierre({ isActive = true }: { isActive?: boolean }) {
             </span>
           ))}
         </div>
+
+        <div className="mx-auto mt-5 h-px w-10 bg-paper-0/10 sm:mt-6" />
+        <p className="mt-3 font-mono text-[9px] uppercase tracking-[0.22em] text-paper-0/35 sm:text-[10px]">
+          Autora
+        </p>
+        <p className="mt-1 font-display text-sm font-semibold text-paper-0/70 sm:text-base">
+          Luna Barreto
+        </p>
       </div>
     </div>
   );
@@ -726,8 +788,8 @@ function SlideVideo({ isActive = true }: { isActive?: boolean }) {
   };
 
   return (
-    <div className="flex h-full w-full flex-col bg-forest-950 px-4 pb-[52px] pt-5 text-paper-0 sm:px-6 sm:pt-6">
-      <div className="flex w-full flex-1 flex-col">
+    <div className="flex h-full w-full flex-col bg-forest-950 px-10 pb-[52px] pt-8 text-paper-0 md:px-14 lg:px-20">
+      <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col">
 
         {/* Badge */}
         <div className="mb-3 inline-flex w-fit items-center gap-2 rounded-full px-3 py-1.5">
@@ -761,8 +823,8 @@ function SlideVideo({ isActive = true }: { isActive?: boolean }) {
               </div>
             </div>
             {/* desktop */}
-            <div className="relative hidden h-full w-full overflow-hidden rounded-3xl border border-paper-0/10 bg-forest-900 sm:block">
-              <video ref={v1DesktopRef} className="h-full w-full object-cover"
+            <div className="hidden h-full w-full items-center justify-center overflow-hidden rounded-3xl border border-paper-0/10 bg-forest-900 sm:flex">
+              <video ref={v1DesktopRef} className="h-full w-auto max-w-full"
                 src="/prueba-campo.mp4" controls muted playsInline onEnded={onFirstEnded} />
             </div>
           </div>
@@ -778,8 +840,8 @@ function SlideVideo({ isActive = true }: { isActive?: boolean }) {
               </div>
             </div>
             {/* desktop */}
-            <div className="relative hidden h-full w-full overflow-hidden rounded-3xl border border-paper-0/10 bg-forest-900 sm:block">
-              <video ref={v2DesktopRef} className="h-full w-full object-cover"
+            <div className="hidden h-full w-full items-center justify-center overflow-hidden rounded-3xl border border-paper-0/10 bg-forest-900 sm:flex">
+              <video ref={v2DesktopRef} className="h-full w-auto max-w-full"
                 src="/smartfence2.mp4" controls muted playsInline />
             </div>
           </div>

@@ -68,7 +68,7 @@ export function Prototipo() {
             {PARTS.map((p) => (
               <span
                 key={p.label}
-                className={`absolute ${p.pos} hidden lg:inline-flex items-center gap-1.5 rounded-full border border-forest-800/15 bg-paper-0 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wide text-forest-800 shadow-sm`}
+                className={`absolute ${p.pos} hidden lg:inline-flex items-center gap-1.5 rounded-full border border-forest-800/15 bg-paper-0 px-2.5 py-1 font-mono text-[12px] uppercase tracking-wide text-forest-800 shadow-sm`}
               >
                 <span className="h-1.5 w-1.5 rounded-full bg-signal-400" />
                 {p.label}
